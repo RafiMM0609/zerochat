@@ -1,0 +1,31 @@
+{
+  "name": "Agnostic AI Platform",
+  "short_name": "Agnostic AI",
+  "description": "Personal AI workspace with LightRAG visualizer and AI security hardening.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0b1219",
+  "theme_color": "#0b1219",
+  "orientation": "any",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agnostic AI Platform</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <!-- PWA Support -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0b1219">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Agnostic AI">
+  <link rel="apple-touch-icon" href="favicon.svg">
+  
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="components/ChatDeletePopup.css">
+  <link rel="stylesheet" href="components/Notification.css">
+  <script src="https://cdn.jsdelivr.net/npm/graphology@0.25.1/dist/graphology.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/sigma.js/2.4.0/sigma.min.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <!-- Auth View Component - Split Screen -->
+    <div id="auth-view" class="view active">
+      <div class="auth-split">
+
+        <!-- Left: Login Form -->
+        <div class="auth-form-panel">
+          <div class="auth-form-inner">
+            <div class="auth-logo-sm">AGNOSTIC</div>
+            <h1 class="auth-welcome">Welcome back!</h1>
+            <p class="auth-subtitle">Sign in to your account to continue</p>
+
+            <form id="auth-form">
+              <div class="auth-field">
+                <label>Email <span class="required">*</span></label>
+                <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+              </div>
+              <div class="auth-field">
+                <label>Password <span class="required">*</span></label>
+                <input type="password" id="password" placeholder="Enter your password" required autocomplete="current-password">
+              </div>
+
+              <button type="submit" id="auth-btn" class="auth-btn-primary">Log In</button>
+
+              <div class="auth-divider"><span>or</span></div>
+
+              <button type="button" class="auth-btn-google" onclick="loginAsGuest()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2dd4bf" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                Continue as Guest
+              </button>
+
+              <p class="toggle-auth" onclick="toggleAuthMode()">Don't have an account? <strong>Register</strong></p>
+            </form>
+          </div>
+        </div>
+
+        <!-- Right: Abstract Geometric Art -->
+        <div class="auth-art-panel">
+          <div class="auth-art-container">
+            <!-- Floating geometric shapes -->
+            <div class="geo geo-rect geo-rect-1"></div>
+            <div class="geo geo-rect geo-rect-2"></div>
+            <div class="geo geo-tri geo-tri-1"></div>
+            <div class="geo geo-tri geo-tri-2"></div>
+            <div class="geo geo-circle geo-circle-1"></div>
+            <div class="geo geo-circle geo-circle-2"></div>
+            <div class="geo geo-semi geo-semi-1"></div>
+            <div class="geo geo-semi geo-semi-2"></div>
+            <div class="geo geo-dot-grid"></div>
+            <div class="geo geo-wavy"></div>
+            <div class="geo geo-star"></div>
+            <div class="geo geo-dash geo-dash-1"></div>
+            <div class="geo geo-dash geo-dash-2"></div>
+            <div class="geo geo-dash geo-dash-3"></div>
+
+            <div class="art-brand">AGNOSTIC</div>
+            <p class="art-tagline">Your personal AI workspace</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Welcome Animation Overlay -->
+    <div id="welcome-overlay">
+      <div class="welcome-bg-glow"></div>
+      <div class="welcome-content">
+        <div class="welcome-particles" id="welcome-particles"></div>
+        <p class="welcome-subtitle" id="welcome-subtitle">Welcome to</p>
+        <h1 class="welcome-title" id="welcome-title">
+          <span class="welcome-letter">A</span><span class="welcome-letter">g</span><span class="welcome-letter">n</span><span class="welcome-letter">o</span><span class="welcome-letter">s</span><span class="welcome-letter">t</span><span class="welcome-letter">i</span><span class="welcome-letter">c</span>
+        </h1>
+        <div class="welcome-line" id="welcome-line"></div>
+        <p class="welcome-tagline" id="welcome-tagline">Your personal AI workspace</p>
+      </div>
+    </div>
+
+    <!-- Main App View -->
+    <div id="main-view" class="view">
+
+      <div class="app-layout" id="app-layout">
+        <nav class="sidebar glass" id="sidebar">
+          <div class="sidebar-header" onclick="toggleSidebar()" style="cursor:pointer;">
+            <div class="logo" id="sidebar-logo">A</div>
+            <div class="logo-full" id="sidebar-logo-full">Agnostic</div>
+            <div class="hamburger" id="hamburger-btn" onclick="event.stopPropagation();toggleMobileMenu()">
+              <span class="bar"></span>
+              <span class="bar"></span>
+              <span class="bar"></span>
+            </div>
+          </div>
+          <ul class="nav-links" id="nav-links-menu">
+            <div class="nav-indicator-bg" id="nav-indicator"></div>
+            <li onclick="switchTab('overview')" id="nav-overview" class="active">
+              <span class="nav-short">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6A2.25 2.25 0 0 1 6 3.75h2.25A2.25 2.25 0 0 1 10.5 6v2.25a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM3.75 15.75A2.25 2.25 0 0 1 6 13.5h2.25a2.25 2.25 0 0 1 2.25 2.25V18a2.25 2.25 0 0 1-2.25 2.25H6a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 6a2.25 2.25 0 0 1 2.25-2.25H18A2.25 2.25 0 0 1 20.25 6v2.25A2.25 2.25 0 0 1 18 10.5h-2.25a2.25 2.25 0 0 1-2.25-2.25V6ZM13.5 15.75a2.25 2.25 0 0 1 2.25-2.25H18a2.25 2.25 0 0 1 2.25 2.25V18A2.25 2.25 0 0 1 18 20.25h-2.25A2.25 2.25 0 0 1 13.5 18v-2.25Z" />
+                </svg>
+              </span>
+              <span class="nav-label">Overview</span>
+            </li>
+            <li onclick="switchTab('chat')" id="nav-chat">
+              <span class="nav-short">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 0 1 .865-.501 48.172 48.172 0 0 0 3.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
+                </svg>
+              </span>
+              <span class="nav-label">Chat</span>
+            </li>
+            <div id="chat-sessions-list"
+              style="display: flex; flex-direction: column; gap: 4px; padding-left: 24px; padding-right: 12px; margin-bottom: 8px; max-height: 250px; overflow-y: auto; overflow-x: hidden;">
+              <!-- Chat session items -->
+            </div>
+            <li onclick="switchTab('knowledge')" id="nav-knowledge">
+              <span class="nav-short">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+                </svg>
+              </span>
+              <span class="nav-label">Knowledge</span>
+            </li>
+            <li onclick="switchTab('graph')" id="nav-graph">
+              <span class="nav-short">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px;">
+                  <circle cx="12" cy="5" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+                  <circle cx="5" cy="18" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+                  <circle cx="19" cy="18" r="2.5" stroke="currentColor" stroke-width="1.5"/>
+                  <line x1="10" y1="7" x2="6.5" y2="15.5" stroke="currentColor" stroke-width="1.5"/>
+                  <line x1="14" y1="7" x2="17.5" y2="15.5" stroke="currentColor" stroke-width="1.5"/>
+                  <line x1="7.5" y1="18" x2="16.5" y2="18" stroke="currentColor" stroke-width="1.5"/>
+                </svg>
+              </span>
+              <span class="nav-label">Graph View</span>
+            </li>
+            <li onclick="switchTab('security')" id="nav-security">
+              <span class="nav-short">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0 1 12 2.944a11.955 11.955 0 0 1-8.618 3.04A12.02 12.02 0 0 0 3 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </span>
+              <span class="nav-label">Security</span>
+            </li>
+            <li onclick="switchTab('settings')" id="nav-settings">
+              <span class="nav-short">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 0-1.369-.491l-1.297-2.247a1.125 1.125 0 0 0 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 0 0-.255c.007-.378-.138-.75-.43-.992l-1.004-.827a1.125 1.125 0 0 0-.26-1.43l1.297-2.247a1.125 1.125 0 0 0 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281Z M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+              </span>
+              <span class="nav-label">Settings</span>
+            </li>
+            <li onclick="logout()">
+              <span class="nav-short">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 20px; height: 20px;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" />
+                </svg>
+              </span>
+              <span class="nav-label">Logout</span>
+            </li>
+          </ul>
+        </nav>
+
+
+      <main class="content">
+        <!-- Overview Tab -->
+        <div id="overview-tab" class="tab active">
+          <div class="overview-container glass" id="overview-box">
+            <div style="font-size: 12px; color: #71717a; padding: 4px 0 0 0; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;">System Metrics</div>
+            <div class="hero-strip" id="hero-strip">
+              <div class="hero-stat">
+                <div class="hero-stat-label">Active Sessions</div>
+                <div class="hero-stat-value" id="hero-sessions">—</div>
+                <div class="hero-stat-trend">Live</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-label">Documents</div>
+                <div class="hero-stat-value" id="hero-documents">—</div>
+                <div class="hero-stat-trend">Indexed</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-label">Threats Blocked</div>
+                <div class="hero-stat-value" id="hero-blocked">—</div>
+                <div class="hero-stat-trend">Security</div>
+              </div>
+              <div class="hero-stat">
+                <div class="hero-stat-label">API Calls (24h)</div>
+                <div class="hero-stat-value" id="hero-api-calls">—</div>
+                <div class="hero-stat-trend">Usage</div>
+              </div>
+            </div>
+
+            <div class="overview-grid" style="margin-top: 24px;">
+              <div class="overview-card">
+                <div style="font-size: 11px; color: #52525b; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 12px;">Shield Status</div>
+                <div class="shield-list">
+                  <div class="shield-card" style="margin-bottom: 8px;">
+                    <div class="shield-top">
+                      <div class="shield-name">Prompt Guard</div>
+                      <div class="shield-badge on">ENABLED</div>
+                    </div>
+                  </div>
+                  <div class="shield-card" style="margin-bottom: 8px;">
+                    <div class="shield-top">
+                      <div class="shield-name">PII Redactor</div>
+                      <div class="shield-badge on">ENABLED</div>
+                    </div>
+                  </div>
+                  <div class="shield-card" style="margin-bottom: 8px;">
+                    <div class="shield-top">
+                      <div class="shield-name">Rate Limiter</div>
+                      <div class="shield-badge on">ENABLED</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="overview-card">
+                <div style="font-size: 11px; color: #52525b; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 12px;">System Status</div>
+                <div class="status-mini" style="margin:0; padding:0; border:none;">
+                  <div class="status-mini-row"><span>Database</span><span class="status-mini-dot" id="status-db-overview"></span></div>
+                  <div class="status-mini-row"><span>OpenRouter</span><span class="status-mini-dot" id="status-openrouter-overview"></span></div>
+                  <div class="status-mini-row"><span>Embeddings</span><span class="status-mini-dot" id="status-embedding-overview"></span></div>
+                </div>
+                <div style="margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 12px;">
+                  <div style="font-size: 11px; color: #52525b; font-family: monospace; margin-bottom: 4px;">Endpoint: <span style="color: #71717a;">/api/chat/completions</span></div>
+                  <div style="font-size: 10px; color: #3f3f46; font-family: monospace;">agnostic v1.0.0 · operational</div>
+                </div>
+              </div>
+            </div>
+
+          <!-- Usage Log -->
+          <div class="overview-card" style="margin-top: 20px;">
+            <div style="font-size: 11px; color: #52525b; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+              <span>API Completion Log</span>
+              <span style="font-size: 10px; color: #3f3f46; font-family: monospace; text-transform: none; letter-spacing: 0;" id="usage-count">0 calls</span>
+            </div>
+            <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 10px; padding: 0 0 8px 0; font-size: 10px; color: #3f3f46; font-family: monospace; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 8px;">
+              <span>Time</span>
+              <span>Source</span>
+              <span>Input</span>
+              <span>Output</span>
+            </div>
+            <div id="usage-log-list" style="max-height: 260px; overflow-y: auto;">
+              <div style="color: #71717a; font-size: 11px; font-family: monospace; padding: 16px 0; text-align: center;">No usage data yet. Send some messages first.</div>
+            </div>
+          </div>
+          </div>
+        </div>
+
+        <!-- Chat Tab -->
+        <div id="chat-tab" class="tab">
+          <div class="chat-container glass" id="chat-box">
+            <div id="active-chat-header">
+              <span id="active-chat-title" class="desktop-only">New Chat</span>
+              <select id="mobile-chat-selector" class="mobile-only glass"
+                style="padding: 6px; border-radius: 6px; background: rgba(0,0,0,0.3); color: #fff; max-width: 60%; border: 1px solid rgba(255,255,255,0.2); outline: none; display: none;">
+                <option value="">Select chat...</option>
+              </select>
+              <button id="new-chat-btn" class="primary-btn"
+                style="margin: 0; padding: 6px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                New Chat
+              </button>
+            </div>
+            <div id="chat-history" class="chat-history"></div>
+            <form id="chat-form" class="chat-input-area">
+              <input type="text" id="chat-input" placeholder="Ask anything..." required autocomplete="off">
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Knowledge Tab -->
+        <div id="knowledge-tab" class="tab">
+          <div class="knowledge-container glass" id="knowledge-box">
+            <h2>Your Knowledge Base</h2>
+            <p>Upload documents to teach your AI new things.</p>
+            <div class="upload-container" style="margin-top: 20px;">
+              <div id="drop-zone" class="upload-drop-zone">
+                <div class="drop-zone-content">
+                  <p class="drop-zone-text">Drag & drop files here or click to browse</p>
+                  <p class="drop-zone-subtext">Supports PDF, TXT, and MD up to 10MB</p>
+                  <p class="drop-zone-warning" style="color: #f87171; font-size: 12px; margin-top: 8px;">Do not upload sensitive documents.</p>
+                </div>
+                <input type="file" id="file-upload" accept=".txt,.md,.pdf" style="display: none;">
+              </div>
+
+              <div id="selected-file-container" class="selected-file-container" style="display: none;">
+                <div class="selected-file-info">
+                  <span id="selected-file-name" class="file-name">filename.txt</span>
+                  <span id="selected-file-size" class="file-size">(12 KB)</span>
+                </div>
+                <button onclick="uploadFile()" id="upload-btn" class="upload-action-btn">Upload and Index</button>
+              </div>
+
+              <!-- Upload Progress UI -->
+              <div id="upload-progress-container" class="upload-progress-container" style="display: none;">
+                <div class="upload-progress-header">
+                  <span id="upload-progress-status">Uploading and indexing document...</span>
+                  <span id="upload-progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+                <div id="upload-animation-spinner" class="upload-spinner" style="display: none;">
+                  <div class="spinner-ring"></div>
+                </div>
+              </div>
+            </div>
+            <h3 style="margin-top: 40px; margin-bottom: 10px;">Uploaded Documents</h3>
+            <div id="document-list" class="doc-list"></div>
+          </div>
+        </div>
+
+        <!-- Graph Tab -->
+        <div id="graph-tab" class="tab">
+          <div class="knowledge-container glass" id="graph-box" style="height: 100%; min-height: 600px; display: flex; flex-direction: column;">
+            <h2>Knowledge Graph Visualization</h2>
+            <p>Explore entities and relationships extracted by LightRAG from your documents.</p>
+            
+            <div style="margin-top: 16px; margin-bottom: 12px; display: flex; gap: 12px; align-items: center;">
+              <button onclick="loadGraphData()" class="primary-btn" style="margin: 0; padding: 8px 16px; font-size: 13px;">
+                Refresh Graph
+              </button>
+              <div id="graph-status" style="font-size: 12px; color: #71717a; font-family: monospace;"></div>
+            </div>
+            
+            <div id="graph-canvas-container" style="flex: 1; min-height: 480px; position: relative; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); overflow: hidden; display: flex;">
+              <!-- Graph canvas element -->
+              <div id="graph-canvas" style="flex: 1; height: 100%; min-height: 480px;"></div>
+              
+              <!-- Sidebar details panel -->
+              <div id="graph-details-panel" class="glass" style="width: 320px; border-left: 1px solid rgba(255,255,255,0.08); border-radius: 0; background: rgba(11, 18, 25, 0.9); display: none; flex-direction: column; padding: 20px; color: #e2e8f0; overflow-y: auto; z-index: 10;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 8px;">
+                  <span style="font-weight: 700; text-transform: uppercase; font-size: 10px; letter-spacing: 0.08em; color: #2dd4bf;">Entity Details</span>
+                  <button onclick="closeGraphDetails()" style="width: auto; background: none; border: none; color: #8899aa; cursor: pointer; padding: 4px; font-size: 14px; font-weight: normal; margin: 0; line-height: 1;">✕</button>
+                </div>
+                <h3 id="graph-detail-title" style="margin: 0 0 8px 0; font-size: 18px; color: #fff; font-weight: 600;">-</h3>
+                <div style="margin-bottom: 16px;">
+                  <span id="graph-detail-type" class="badge" style="background: rgba(45, 212, 191, 0.15); color: #2dd4bf; border: 1px solid rgba(45, 212, 191, 0.3); font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; font-family: monospace;">UNKNOWN</span>
+                </div>
+                <div style="font-size: 13px; line-height: 1.6; color: #a1a1aa; flex: 1;">
+                  <p id="graph-detail-desc">-</p>
+                </div>
+                <div id="graph-detail-relations" style="margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px;">
+                  <span style="font-size: 11px; font-weight: 700; text-transform: uppercase; color: #8899aa; display: block; margin-bottom: 8px; letter-spacing: 0.04em;">Connected Entities</span>
+                  <ul id="graph-detail-relations-list" style="list-style: none; font-size: 12px; display: flex; flex-direction: column; gap: 6px; padding: 0;">
+                    <!-- Relations will be inserted here -->
+                  </ul>
+                </div>
+              </div>
+
+              <!-- Zoom / Controls -->
+              <div style="position: absolute; bottom: 20px; left: 20px; display: flex; flex-direction: column; gap: 8px; z-index: 10;">
+                <button onclick="zoomGraph(1.4)" class="glass" style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; cursor: pointer; transition: all 0.2s;" title="Zoom In">+</button>
+                <button onclick="zoomGraph(0.7)" class="glass" style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; color: #fff; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; cursor: pointer; transition: all 0.2s;" title="Zoom Out">−</button>
+                <button onclick="resetGraphView()" class="glass" style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; cursor: pointer; transition: all 0.2s;" title="Reset View">⟲</button>
+              </div>
+              
+              <!-- Instructions / Empty State -->
+              <div id="graph-empty" style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #71717a; text-align: center; padding: 24px; pointer-events: none; z-index: 5;">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.5;">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.004 9.004 0 0 0-12 0M15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                </svg>
+                <div style="font-size: 14px; font-weight: 500; color: #a1a1aa; margin-bottom: 4px;">No Graph Data Loaded</div>
+                <p style="font-size: 12px; max-width: 320px; margin: 0;">Click "Refresh Graph" to load or make sure you have uploaded and indexed some documents.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Tab -->
+        <div id="security-tab" class="tab">
+          <div class="security-container glass" id="security-box">
+            <div class="security-header">
+              <h1>AI Security Hardening</h1>
+              <p>Monitor security events, system shields, and prompt injection logs.</p>
+            </div>
+
+            <!-- Shield Modules Redesigned -->
+            <div class="shield-list" id="shield-list">
+              <div class="shield-card">
+                <div class="shield-top">
+                  <div class="shield-name">Prompt Injection Guard</div>
+                  <div class="shield-badge on">ENABLED</div>
+                </div>
+                <div class="shield-desc">Blocks jailbreak attempts, prompt overrides, and context overflow attacks.</div>
+              </div>
+
+              <div class="shield-card">
+                <div class="shield-top">
+                  <div class="shield-name">PII & Key Redactor</div>
+                  <div class="shield-badge on">ENABLED</div>
+                </div>
+                <div class="shield-desc">Removes emails, phone numbers, tokens, and credentials from inputs and outputs.</div>
+              </div>
+
+              <div class="shield-card">
+                <div class="shield-top">
+                  <div class="shield-name">Rate Limiter</div>
+                  <div class="shield-badge on">ENABLED</div>
+                </div>
+                <div class="shield-desc">Token bucket algorithm per-IP and per-user limits with SQLite backing store.</div>
+              </div>
+
+              <div class="shield-card">
+                <div class="shield-top">
+                  <div class="shield-name">Input Sanitizer</div>
+                  <div class="shield-badge warn">WATCH</div>
+                </div>
+                <div class="shield-desc">Normalizes encoding, strips null bytes, enforces max token thresholds.</div>
+              </div>
+            </div>
+
+            <div class="audit-stream">
+              <div class="audit-title">Audit Log</div>
+              <div id="security-log-tbody-audit" class="audit-stream">
+                <div class="audit-row">
+                  <span class="a-time">--:--</span>
+                  <span class="a-tag tag-ok">WAIT</span>
+                  <span class="a-msg">Waiting for security events...</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Adaptive Security Section (Hermes) -->
+            <div class="security-adaptive-grid" style="margin-top: 24px;">
+              <!-- Hermes Rules Card -->
+              <div class="security-card glass">
+                <div class="card-header"
+                  style="justify-content: space-between; display: flex; align-items: center; width: 100%;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="card-icon" style="background:rgba(139,92,246,0.1); color:#a78bfa;">H</div>
+                    <div class="card-title-group">
+                      <h2>Hermes Adaptive Rules</h2>
+                      <p>Self-synthesized regex rules from security log analysis.</p>
+                    </div>
+                  </div>
+                  <button id="run-auditor-btn" class="primary-btn" onclick="triggerHermesAuditor()"
+                    style="margin: 0; padding: 8px 16px; font-size: 13px;">
+                    Run Hermes Auditor
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div id="hermes-rules-list" class="rules-list">
+                    <div
+                      style="color: var(--text-muted); font-size: 13px; font-style: italic; text-align: center; padding: 20px;">
+                      No adaptive rules synthesized yet. Run auditor to generate them.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Semantic Attack Memory Card -->
+              <div class="security-card glass">
+                <div class="card-header">
+                  <div class="card-icon" style="background:rgba(139,92,246,0.1); color:#a78bfa;">S</div>
+                  <div class="card-title-group">
+                    <h2>Semantic Attack Memory</h2>
+                    <p>Vector database cache of unique blocked prompt injection signatures.</p>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <div class="log-table-wrapper" style="max-height: 250px;">
+                    <table class="log-table">
+                      <thead>
+                        <tr>
+                          <th>Time</th>
+                          <th>Detected Via</th>
+                          <th>Attack Signature</th>
+                        </tr>
+                      </thead>
+                      <tbody id="semantic-memory-tbody">
+                        <tr>
+                          <td colspan="3"
+                            style="text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">
+                            No attack signatures cached in semantic memory yet.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab">
+          <div class="settings-container glass" id="settings-box">
+            <div class="settings-header">
+              <h1>System Settings</h1>
+              <p>Configure your AI persona and developer resources.</p>
+            </div>
+
+            <div class="settings-grid">
+              <!-- AI Persona Card -->
+              <div class="settings-card glass">
+                <div class="card-header">
+                  <div class="card-icon" style="background:rgba(139,92,246,0.1); color:#a78bfa;">P</div>
+                  <div class="card-title-group">
+                    <h2>AI Persona</h2>
+                    <p>Define how your AI should behave and respond.</p>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <textarea id="persona-input"
+                    placeholder="e.g. You are a helpful assistant who responds clearly and concisely..."></textarea>
+                  <div class="action-row">
+                    <button class="primary-btn" onclick="savePersona()">
+                      Save Persona
+                    </button>
+                    <div id="persona-status" class="status-msg"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- API Keys Card -->
+              <div class="settings-card glass">
+                <div class="card-header">
+                  <div class="card-icon" style="background:rgba(139,92,246,0.1); color:#a78bfa;">K</div>
+                  <div class="card-title-group">
+                    <h2>Developer API Keys</h2>
+                    <p>Access the OpenRouter-compatible endpoint at <code>/api/chat/completions</code>.</p>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="api-actions">
+                    <button class="sec-btn" onclick="generateApiKey()">
+                      + Generate New Key
+                    </button>
+                  </div>
+                  <ul id="api-key-list" class="api-key-list"></ul>
+                </div>
+              </div>
+
+              <!-- Database Management Card -->
+              <div class="settings-card glass">
+                <div class="card-header">
+                  <div class="card-icon" style="background:rgba(239,68,68,0.1); color:#f87171;">D</div>
+                  <div class="card-title-group">
+                    <h2>RAG Storage Management</h2>
+                    <p>Manage and reset vector databases to resolve dimension mismatches.</p>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <p style="font-size: 13px; color: #a1a1aa; line-height: 1.5; margin-bottom: 12px;">
+                    If you change the embedding model in your settings (e.g. in `.env`), you might encounter embedding dimension mismatch errors. Resetting the vector database will safely delete the old vector databases and let the system recreate them.
+                  </p>
+                  <div class="action-row">
+                    <button class="primary-btn" onclick="resetVectorDB()" style="background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); font-weight: 500;">
+                      Reset Vector Database
+                    </button>
+                    <div id="db-status" class="status-msg"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- API Tutorial Card -->
+              <div class="settings-card glass">
+                <div class="card-header">
+                  <div class="card-icon" style="background:rgba(139,92,246,0.1); color:#a78bfa;">T</div>
+                  <div class="card-title-group">
+                    <h2>API Reference & Tutorial</h2>
+                    <p>Learn how to query the completions endpoint.</p>
+                  </div>
+                </div>
+                <div class="card-body" style="gap: 20px;">
+                  <!-- Endpoint Section -->
+                  <div class="endpoint-section">
+                    <span class="section-label">API Endpoint</span>
+                    <div class="endpoint-url-box">
+                      <code id="api-endpoint-url">/api/chat/completions</code>
+                      <button class="copy-url-btn" onclick="copyEndpointUrl()" title="Copy Endpoint URL">COPY</button>
+                    </div>
+                  </div>
+
+                  <!-- Code Snippets Section -->
+                  <div class="tutorial-tabs-section">
+                    <span class="section-label">Code Tutorial</span>
+                    <div class="tutorial-tabs">
+                      <button class="tab-btn active" onclick="switchTutorialTab('curl')">cURL</button>
+                      <button class="tab-btn" onclick="switchTutorialTab('js')">JavaScript</button>
+                      <button class="tab-btn" onclick="switchTutorialTab('python')">Python</button>
+                    </div>
+                    <div class="tutorial-code-container">
+                      <pre id="tutorial-code-block" class="tutorial-code"><code class="language-bash">curl -X POST https://chatbot.kagita.my.id/api/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Hello, how are you?",
+    "chatId": 1
+  }'</code></pre>
+                      <button class="copy-code-btn" onclick="copyTutorialCode()" title="Copy Snippet">Copy</button>
+                    </div>
+                  </div>
+
+                  <div class="api-notes">
+                    <p><strong>Info:</strong> <code>chatId</code> (number, optional) links the request to an existing
+                      chat session to retrieve context & save history. Omit for a one-off query.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="components/ChatDeletePopup.js"></script>
+  <script src="components/Notification.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

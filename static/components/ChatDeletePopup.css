@@ -1,0 +1,266 @@
+.chat-delete-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(46, 31, 22, 0.85); /* Dark dusty brown */
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.chat-delete-overlay.active {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.chat-delete-popup {
+  background: #3E2723; /* Dark brown leather */
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(0, 0, 0, 0.05) 0px,
+    rgba(0, 0, 0, 0.05) 2px,
+    transparent 2px,
+    transparent 4px
+  );
+  border: 2px solid #5D4037;
+  border-radius: 8px; /* Rugged, less rounded */
+  padding: 28px 24px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.6), inset 0 0 12px rgba(0,0,0,0.3);
+  transform: scale(0.95) translateY(20px);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  color: #FFECB3; /* Parchment text */
+  font-family: 'Courier New', Courier, monospace; /* Retro typewriter feel */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.chat-delete-overlay.active .chat-delete-popup {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+
+.chat-delete-header {
+  text-align: center;
+}
+
+.chat-delete-header-icon {
+  width: 52px;
+  height: 52px;
+  background: #5D4037;
+  border: 2px dashed #8D6E63;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px auto;
+  color: #D84315; /* Rust red */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.chat-delete-header h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #FFE082;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-family: 'Georgia', 'Times New Roman', serif; /* Western poster style */
+}
+
+.chat-delete-header p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #D7CCC8;
+  line-height: 1.5;
+}
+
+.chat-delete-list {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-right: 8px;
+}
+
+.chat-delete-list::-webkit-scrollbar {
+  width: 8px;
+}
+.chat-delete-list::-webkit-scrollbar-track {
+  background: #2E1F16;
+  border-radius: 4px;
+}
+.chat-delete-list::-webkit-scrollbar-thumb {
+  background: #5D4037;
+  border-radius: 4px;
+  border: 1px solid #2E1F16;
+}
+.chat-delete-list::-webkit-scrollbar-thumb:hover {
+  background: #795548;
+}
+
+.chat-delete-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: #4E342E;
+  border: 1px solid #6D4C41;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  position: relative;
+  gap: 12px;
+}
+
+.chat-delete-item::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 6px; height: 100%;
+  background: #8D6E63;
+  border-top-left-radius: 6px;
+  border-bottom-left-radius: 6px;
+  transition: background 0.3s ease;
+}
+
+.chat-delete-item:hover {
+  background: #5D4037;
+  border-color: #8D6E63;
+}
+
+.chat-delete-item:hover::before {
+  background: #D84315; /* Rust red on hover */
+}
+
+.chat-delete-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0; /* Ensures truncation works */
+}
+
+.chat-delete-item-title {
+  font-size: 1rem;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #FFECB3;
+}
+
+.chat-delete-item-date {
+  font-size: 0.8rem;
+  color: #BCAAA4;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chat-delete-btn {
+  background: transparent;
+  color: #D84315;
+  border: 1px solid #D84315;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.chat-delete-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.chat-delete-btn:hover {
+  background: #D84315;
+  color: #FFF;
+  border-color: #D84315;
+}
+
+.chat-delete-btn:active {
+  transform: translateY(2px);
+}
+
+.chat-delete-close {
+  width: 100%;
+  padding: 14px;
+  background: #4E342E;
+  border: 2px solid #5D4037;
+  color: #FFECB3;
+  border-radius: 6px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.chat-delete-close:hover {
+  background: #5D4037;
+  border-color: #795548;
+}
+
+.chat-delete-close:active {
+  transform: translateY(2px);
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .chat-delete-popup {
+    padding: 20px 16px;
+    gap: 16px;
+  }
+  
+  .chat-delete-header h3 {
+    font-size: 1.2rem;
+  }
+  
+  .chat-delete-header p {
+    font-size: 0.85rem;
+  }
+
+  .chat-delete-header-icon {
+    width: 44px;
+    height: 44px;
+    margin-bottom: 12px;
+  }
+  
+  .chat-delete-item {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  .chat-delete-item-title {
+    font-size: 0.95rem;
+  }
+  
+  .chat-delete-btn {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+}
+

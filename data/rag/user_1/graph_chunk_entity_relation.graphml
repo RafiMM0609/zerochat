@@ -1,0 +1,523 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d13" for="edge" attr.name="truncate" attr.type="string" />
+  <key id="d12" for="edge" attr.name="created_at" attr.type="long" />
+  <key id="d11" for="edge" attr.name="file_path" attr.type="string" />
+  <key id="d10" for="edge" attr.name="source_id" attr.type="string" />
+  <key id="d9" for="edge" attr.name="keywords" attr.type="string" />
+  <key id="d8" for="edge" attr.name="description" attr.type="string" />
+  <key id="d7" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d6" for="node" attr.name="truncate" attr.type="string" />
+  <key id="d5" for="node" attr.name="created_at" attr.type="long" />
+  <key id="d4" for="node" attr.name="file_path" attr.type="string" />
+  <key id="d3" for="node" attr.name="source_id" attr.type="string" />
+  <key id="d2" for="node" attr.name="description" attr.type="string" />
+  <key id="d1" for="node" attr.name="entity_type" attr.type="string" />
+  <key id="d0" for="node" attr.name="entity_id" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="embedding dimension auto-detection">
+      <data key="d0">embedding dimension auto-detection</data>
+      <data key="d1">concept</data>
+      <data key="d2">A method that automatically determines the optimal dimensionality for embedding representations.|&gt;</data>
+      <data key="d3">doc-1030b6eb5bf9cdf7153a5ce7fa06e704-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248344</data>
+      <data key="d6" />
+    </node>
+    <node id="PT Rafita">
+      <data key="d0">PT Rafita</data>
+      <data key="d1">organization</data>
+      <data key="d2">PT Rafita is the company launching product bundles and promotional plans for Q3 2026.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Q3 2026">
+      <data key="d0">Q3 2026</data>
+      <data key="d1">event</data>
+      <data key="d2">Q3 2026 is the quarter for which the strategic bundling and promotional plans are outlined.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="PT Rafita Product and Price Catalog">
+      <data key="d0">PT Rafita Product and Price Catalog</data>
+      <data key="d1">content</data>
+      <data key="d2">The PT Rafita Product and Price Catalog lists the current inventory used to design the bundling strategies.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="WFH Pro Kit">
+      <data key="d0">WFH Pro Kit</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The WFH Pro Kit is a product bundle designed for remote workers, including a mechanical keyboard, office desk mat, and fast charger.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Mechanical Keyboard (RAF-KBD-MECH)">
+      <data key="d0">Rafita Mechanical Keyboard (RAF-KBD-MECH)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Rafita Mechanical Keyboard (RAF-KBD-MECH) is a product included in the WFH Pro Kit with limited stock of 85 units.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Office Desk Mat (RAF-MAT-01)">
+      <data key="d0">Rafita Office Desk Mat (RAF-MAT-01)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Rafita Office Desk Mat (RAF-MAT-01) is a product included in the WFH Pro Kit.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Fast Charger 65W (RAF-CHG-65)">
+      <data key="d0">Rafita Fast Charger 65W (RAF-CHG-65)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Rafita Fast Charger 65W (RAF-CHG-65) is a product included in the WFH Pro Kit.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Urban Commuter">
+      <data key="d0">Urban Commuter</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Urban Commuter is a product bundle targeted at students and daily commuters, combining a backpack and tumbler.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Backpack Neo (RAF-BPK-NEO)">
+      <data key="d0">Rafita Backpack Neo (RAF-BPK-NEO)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Rafita Backpack Neo (RAF-BPK-NEO) is a product included in the Urban Commuter bundle with ample stock over 200 units.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Tumbler Swiss Edition (RAF-TMB-SW)">
+      <data key="d0">Rafita Tumbler Swiss Edition (RAF-TMB-SW)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Rafita Tumbler Swiss Edition (RAF-TMB-SW) is a product included in the Urban Commuter bundle with ample stock over 200 units.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Audio-Active Set">
+      <data key="d0">Audio-Active Set</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Audio-Active Set is a product bundle pairing a smartwatch and wireless earbuds for fitness enthusiasts.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Smartwatch V1 (RAF-SMW-01)">
+      <data key="d0">Rafita Smartwatch V1 (RAF-SMW-01)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Rafita Smartwatch V1 (RAF-SMW-01) is a product included in the Audio-Active Set.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Wireless Earbuds (RAF-TWS-01)">
+      <data key="d0">Rafita Wireless Earbuds (RAF-TWS-01)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Rafita Wireless Earbuds (RAF-TWS-01) is a product included in the Audio-Active Set.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Smart Home Hub (RAF-HUB-01)">
+      <data key="d0">Rafita Smart Home Hub (RAF-HUB-01)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">The Rafita Smart Home Hub (RAF-HUB-01) is a product with exactly 60 units held, positioned as an ultra-premium item for VIP campaign.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Rafita Closer">
+      <data key="d0">Rafita Closer</data>
+      <data key="d1">organization</data>
+      <data key="d2">Rafita Closer is the loyalty program whose top 100 members are targeted for the exclusive VIP campaign.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Google Ads (Search)">
+      <data key="d0">Google Ads (Search)</data>
+      <data key="d1">artifact</data>
+      <data key="d2">Google Ads (Search) is the primary marketing channel allocated for the WFH Pro Kit.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="TikTok &amp; Instagram Ads">
+      <data key="d0">TikTok &amp; Instagram Ads</data>
+      <data key="d1">artifact</data>
+      <data key="d2">TikTok &amp; Instagram Ads are the primary marketing channels allocated for the Urban Commuter bundle.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Makassar logistics hub">
+      <data key="d0">Makassar logistics hub</data>
+      <data key="d1">location</data>
+      <data key="d2">The Makassar logistics hub is the new facility used to prioritize order fulfillment for Eastern Indonesia.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Eastern Indonesia">
+      <data key="d0">Eastern Indonesia</data>
+      <data key="d1">location</data>
+      <data key="d2">Eastern Indonesia is the region whose order fulfillment is prioritized through the Makassar logistics hub.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Professionals, Tech Enthusiasts">
+      <data key="d0">Professionals, Tech Enthusiasts</data>
+      <data key="d1">concept</data>
+      <data key="d2">Professionals and Tech Enthusiasts are the target demographic for the WFH Pro Kit marketed via Google Ads.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Students, Millennials">
+      <data key="d0">Students, Millennials</data>
+      <data key="d1">concept</data>
+      <data key="d2">Students and Millennials are the target demographic for the Urban Commuter marketed via TikTok &amp; Instagram Ads.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Remote workers">
+      <data key="d0">Remote workers</data>
+      <data key="d1">concept</data>
+      <data key="d2">Remote workers are the target audience for the WFH Pro Kit bundle.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Students and daily commuters">
+      <data key="d0">Students and daily commuters</data>
+      <data key="d1">concept</data>
+      <data key="d2">Students and daily commuters are the target audience for the Urban Commuter bundle.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Fitness enthusiasts">
+      <data key="d0">Fitness enthusiasts</data>
+      <data key="d1">concept</data>
+      <data key="d2">Fitness enthusiasts are the target audience for the Audio-Active Set bundle.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Email Marketing">
+      <data key="d0">Email Marketing</data>
+      <data key="d1">method</data>
+      <data key="d2">Email Marketing is the channel used for the exclusive VIP campaign targeting Rafita Closer members.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Top 100 members">
+      <data key="d0">Top 100 members</data>
+      <data key="d1">concept</data>
+      <data key="d2">Top 100 members are the highest-tier members of the Rafita Closer loyalty program targeted for early access.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Average order value">
+      <data key="d0">Average order value</data>
+      <data key="d1">concept</data>
+      <data key="d2">Average order value is a metric the bundling strategies aim to increase.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <node id="Inventory">
+      <data key="d0">Inventory</data>
+      <data key="d1">data</data>
+      <data key="d2">Inventory refers to the current stock levels listed in the PT Rafita Product and Price Catalog.</data>
+      <data key="d3">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d4">unknown_source</data>
+      <data key="d5">1784248982</data>
+      <data key="d6" />
+    </node>
+    <edge source="PT Rafita" target="WFH Pro Kit">
+      <data key="d7">1.0</data>
+      <data key="d8">PT Rafita creates the WFH Pro Kit as a strategic product bundle for Q3 2026.</data>
+      <data key="d9">creates,product bundle</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="PT Rafita" target="Urban Commuter">
+      <data key="d7">1.0</data>
+      <data key="d8">PT Rafita creates the Urban Commuter as a strategic product bundle for Q3 2026.</data>
+      <data key="d9">creates,product bundle</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="PT Rafita" target="Audio-Active Set">
+      <data key="d7">1.0</data>
+      <data key="d8">PT Rafita creates the Audio-Active Set as a strategic product bundle for Q3 2026.</data>
+      <data key="d9">creates,product bundle</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="PT Rafita" target="Rafita Smart Home Hub (RAF-HUB-01)">
+      <data key="d7">1.0</data>
+      <data key="d8">PT Rafita holds exactly 60 units of the Rafita Smart Home Hub for an exclusive VIP campaign.</data>
+      <data key="d9">VIP campaign,holds</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="PT Rafita Product and Price Catalog" target="Inventory">
+      <data key="d7">1.0</data>
+      <data key="d8">The PT Rafita Product and Price Catalog lists the current inventory used for bundling strategies.</data>
+      <data key="d9">current inventory,lists</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="WFH Pro Kit" target="Rafita Mechanical Keyboard (RAF-KBD-MECH)">
+      <data key="d7">2.0</data>
+      <data key="d8">Due to the mechanical keyboard's limited stock of 85 units, the WFH Pro Kit is capped at 50 packages.&lt;SEP&gt;The WFH Pro Kit includes the Rafita Mechanical Keyboard (RAF-KBD-MECH).</data>
+      <data key="d9">bundle cap,includes,limited stock</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="WFH Pro Kit" target="Rafita Office Desk Mat (RAF-MAT-01)">
+      <data key="d7">1.0</data>
+      <data key="d8">The WFH Pro Kit includes the Rafita Office Desk Mat (RAF-MAT-01).</data>
+      <data key="d9">includes</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="WFH Pro Kit" target="Rafita Fast Charger 65W (RAF-CHG-65)">
+      <data key="d7">1.0</data>
+      <data key="d8">The WFH Pro Kit includes the Rafita Fast Charger 65W (RAF-CHG-65).</data>
+      <data key="d9">includes</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="WFH Pro Kit" target="Google Ads (Search)">
+      <data key="d7">1.0</data>
+      <data key="d8">The WFH Pro Kit is marketed primarily through Google Ads (Search).</data>
+      <data key="d9">marketed via,primary channel</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="WFH Pro Kit" target="Remote workers">
+      <data key="d7">1.0</data>
+      <data key="d8">The WFH Pro Kit is designed for remote workers.</data>
+      <data key="d9">designed for,target audience</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="WFH Pro Kit" target="Average order value">
+      <data key="d7">1.0</data>
+      <data key="d8">The bundling strategies including the WFH Pro Kit aim to increase average order value.</data>
+      <data key="d9">increase,strategy goal</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Urban Commuter" target="Rafita Backpack Neo (RAF-BPK-NEO)">
+      <data key="d7">2.0</data>
+      <data key="d8">The Rafita Backpack Neo has ample stock over 200 units, making the Urban Commuter the main volume driver.&lt;SEP&gt;The Urban Commuter includes the Rafita Backpack Neo (RAF-BPK-NEO).</data>
+      <data key="d9">ample stock,includes,volume driver</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Urban Commuter" target="Rafita Tumbler Swiss Edition (RAF-TMB-SW)">
+      <data key="d7">2.0</data>
+      <data key="d8">The Rafita Tumbler Swiss Edition has ample stock over 200 units, making the Urban Commuter the main volume driver.&lt;SEP&gt;The Urban Commuter includes the Rafita Tumbler Swiss Edition (RAF-TMB-SW).</data>
+      <data key="d9">ample stock,includes,volume driver</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Urban Commuter" target="TikTok &amp; Instagram Ads">
+      <data key="d7">1.0</data>
+      <data key="d8">The Urban Commuter is marketed primarily through TikTok &amp; Instagram Ads.</data>
+      <data key="d9">marketed via,primary channel</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Urban Commuter" target="Students and daily commuters">
+      <data key="d7">1.0</data>
+      <data key="d8">The Urban Commuter is targeted at students and daily commuters.</data>
+      <data key="d9">target audience,targeted at</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Urban Commuter" target="Makassar logistics hub">
+      <data key="d7">2.0</data>
+      <data key="d8">30% of the Urban Commuter dedicated stock is pre-positioned at the Makassar logistics hub by August 2026.&lt;SEP&gt;The Makassar logistics hub ensures fast delivery for the Urban Commuter bundle.</data>
+      <data key="d9">ensures fast delivery,logistics,stock pre-positioned</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Urban Commuter" target="Average order value">
+      <data key="d7">1.0</data>
+      <data key="d8">The bundling strategies including the Urban Commuter aim to increase average order value.</data>
+      <data key="d9">increase,strategy goal</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Audio-Active Set" target="Rafita Smartwatch V1 (RAF-SMW-01)">
+      <data key="d7">1.0</data>
+      <data key="d8">The Audio-Active Set includes the Rafita Smartwatch V1 (RAF-SMW-01).</data>
+      <data key="d9">includes</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Audio-Active Set" target="Rafita Wireless Earbuds (RAF-TWS-01)">
+      <data key="d7">1.0</data>
+      <data key="d8">The Audio-Active Set includes the Rafita Wireless Earbuds (RAF-TWS-01).</data>
+      <data key="d9">includes</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Audio-Active Set" target="Fitness enthusiasts">
+      <data key="d7">1.0</data>
+      <data key="d8">The Audio-Active Set is a pairing for fitness enthusiasts.</data>
+      <data key="d9">pairing for,target audience</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Audio-Active Set" target="Average order value">
+      <data key="d7">1.0</data>
+      <data key="d8">The bundling strategies including the Audio-Active Set aim to increase average order value.</data>
+      <data key="d9">increase,strategy goal</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Rafita Smart Home Hub (RAF-HUB-01)" target="Rafita Closer">
+      <data key="d7">1.0</data>
+      <data key="d8">The Rafita Smart Home Hub is offered as early access to the top 100 members of the Rafita Closer loyalty program.</data>
+      <data key="d9">VIP offer,early access</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Rafita Closer" target="Top 100 members">
+      <data key="d7">1.0</data>
+      <data key="d8">The top 100 members are part of the Rafita Closer loyalty program.</data>
+      <data key="d9">loyalty program,membership</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Google Ads (Search)" target="Professionals, Tech Enthusiasts">
+      <data key="d7">1.0</data>
+      <data key="d8">Google Ads (Search) targets Professionals and Tech Enthusiasts for the WFH Pro Kit.</data>
+      <data key="d9">demographic,targets</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="TikTok &amp; Instagram Ads" target="Students, Millennials">
+      <data key="d7">1.0</data>
+      <data key="d8">TikTok &amp; Instagram Ads target Students and Millennials for the Urban Commuter.</data>
+      <data key="d9">demographic,targets</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Makassar logistics hub" target="Eastern Indonesia">
+      <data key="d7">1.0</data>
+      <data key="d8">Order fulfillment for Eastern Indonesia is prioritized through the Makassar logistics hub.</data>
+      <data key="d9">fulfillment prioritized,logistics</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+    <edge source="Email Marketing" target="Top 100 members">
+      <data key="d7">1.0</data>
+      <data key="d8">Email Marketing targets the top 100 members of the Rafita Closer loyalty program for the VIP campaign.</data>
+      <data key="d9">VIP campaign,targets</data>
+      <data key="d10">doc-f2259393bbdc5e950df79a0ed459d818-chunk-000</data>
+      <data key="d11">unknown_source</data>
+      <data key="d12">1784248982</data>
+      <data key="d13" />
+    </edge>
+  </graph>
+</graphml>

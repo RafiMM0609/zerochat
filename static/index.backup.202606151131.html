@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agnostic AI Platform</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="auth.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <link rel="stylesheet" href="components/ChatDeletePopup.css">
+  <link rel="stylesheet" href="components/Notification.css">
+</head>
+
+<body>
+  <div id="app">
+    <!-- Auth View Component -->
+    <div id="auth-view" class="view active">
+      <div class="auth-scene">
+        <div class="scene-world" id="scene-world">
+          <!-- Ground Surface -->
+          <div class="ground-surface"></div>
+
+          <!-- SVG Connections -->
+          <svg class="connection-lines" viewBox="0 0 1000 1000">
+            <!-- Center is 500, 500 -->
+            <!-- Lines to Nodes -->
+            <path d="M 500 500 Q 350 400 200 300" />
+            <path d="M 500 500 Q 400 650 250 700" />
+            <path d="M 500 500 Q 700 350 800 250" />
+            <path d="M 500 500 Q 650 550 750 600" />
+            <path d="M 500 500 Q 250 500 50 450" />
+            <path d="M 500 500 Q 700 650 900 750" />
+
+            <!-- Inter-node connections for mesh effect -->
+            <path d="M 200 300 Q 100 400 50 450" />
+            <path d="M 200 300 Q 200 500 250 700" />
+            <path d="M 50 450 Q 150 600 250 700" />
+            <path d="M 800 250 Q 800 450 750 600" />
+            <path d="M 750 600 Q 850 700 900 750" />
+          </svg>
+
+          <!-- Document Nodes -->
+          <div class="doc-node doc-pdf" style="margin-left: -332px; margin-top: -240px;">PDF</div>
+          <div class="doc-node doc-word" style="margin-left: -282px; margin-top: 160px;">W</div>
+          <div class="doc-node doc-excel" style="margin-left: 268px; margin-top: -290px;">X</div>
+          <div class="doc-node doc-json" style="margin-left: 218px; margin-top: 60px;">JSON</div>
+          <div class="doc-node doc-word" style="margin-left: -482px; margin-top: -90px;">W</div>
+          <div class="doc-node doc-pdf" style="margin-left: 368px; margin-top: 210px;">PDF</div>
+
+          <!-- Login Box -->
+          <div class="auth-3d-wrapper">
+            <div class="auth-container premium-glass" id="auth-box">
+              <h2>Welcome to Agnostic</h2>
+              <p>Your personal AI workspace</p>
+              <form id="auth-form">
+                <div class="input-group">
+                  <input type="email" id="email" placeholder="Email" required autocomplete="email">
+                </div>
+                <div class="input-group">
+                  <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+                </div>
+                <!-- <div class="auth-options">
+                  <a href="#" class="forgot-pwd">Forgot Password?</a>
+                </div> -->
+                <button type="submit" id="auth-btn" class="premium-btn">Login</button>
+                <button type="button" id="guest-btn" class="guest-btn" onclick="loginAsGuest()">Login as Guest</button>
+                <p class="toggle-auth" onclick="toggleAuthMode()">Need an account? Register</p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Welcome Animation Overlay -->
+    <div id="welcome-overlay">
+      <div class="welcome-bg-glow"></div>
+      <div class="welcome-content">
+        <div class="welcome-particles" id="welcome-particles"></div>
+        <p class="welcome-subtitle" id="welcome-subtitle">Welcome to</p>
+        <h1 class="welcome-title" id="welcome-title">
+          <span class="welcome-letter">A</span><span class="welcome-letter">g</span><span class="welcome-letter">n</span><span class="welcome-letter">o</span><span class="welcome-letter">s</span><span class="welcome-letter">t</span><span class="welcome-letter">i</span><span class="welcome-letter">c</span>
+        </h1>
+        <div class="welcome-line" id="welcome-line"></div>
+        <p class="welcome-tagline" id="welcome-tagline">Your personal AI workspace</p>
+      </div>
+    </div>
+
+    <!-- Main App View -->
+    <div id="main-view" class="view">
+      <nav class="sidebar glass" id="sidebar">
+        <div class="sidebar-header">
+          <div class="logo">Agnostic</div>
+          <div class="hamburger" id="hamburger-btn" onclick="toggleMobileMenu()">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+        <ul class="nav-links" id="nav-links-menu">
+          <div class="nav-indicator-bg" id="nav-indicator"></div>
+          <li onclick="switchTab('chat')" id="nav-chat" class="active">💬 Chat</li>
+          <div id="chat-sessions-list"
+            style="display: flex; flex-direction: column; gap: 4px; padding-left: 24px; padding-right: 12px; margin-bottom: 8px; max-height: 250px; overflow-y: auto; overflow-x: hidden;">
+            <!-- Chat session items -->
+          </div>
+          <li onclick="switchTab('knowledge')" id="nav-knowledge">📚 Knowledge</li>
+          <li onclick="switchTab('security')" id="nav-security">🛡️ Security</li>
+          <li onclick="switchTab('settings')" id="nav-settings">⚙️ Settings</li>
+          <li onclick="logout()">🚪 Logout</li>
+        </ul>
+        <div class="status-container">
+          <div class="status-title">🛠️ System Status</div>
+          <div class="status-item">
+            <span class="status-label">🛢️ Database</span>
+            <span id="status-db" class="status-dot"></span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">🤖 OpenRouter</span>
+            <span id="status-openrouter" class="status-dot"></span>
+          </div>
+          <div class="status-item">
+            <span class="status-label">🧠 Embedding</span>
+            <span id="status-embedding" class="status-dot"></span>
+          </div>
+        </div>
+      </nav>
+
+
+      <main class="content">
+        <!-- Chat Tab -->
+        <div id="chat-tab" class="tab active">
+          <div class="chat-container glass" id="chat-box">
+            <div id="active-chat-header">
+              <span id="active-chat-title" class="desktop-only">New Chat</span>
+              <select id="mobile-chat-selector" class="mobile-only glass"
+                style="padding: 6px; border-radius: 6px; background: rgba(0,0,0,0.3); color: #fff; max-width: 60%; border: 1px solid rgba(255,255,255,0.2); outline: none; display: none;">
+                <option value="">Select chat...</option>
+              </select>
+              <button id="new-chat-btn" class="primary-btn"
+                style="margin: 0; padding: 6px 12px; font-size: 13px; display: flex; align-items: center; gap: 6px;">
+                <span>➕</span> New Chat
+              </button>
+            </div>
+            <div id="chat-history" class="chat-history"></div>
+            <form id="chat-form" class="chat-input-area">
+              <input type="text" id="chat-input" placeholder="Ask anything..." required autocomplete="off">
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Knowledge Tab -->
+        <div id="knowledge-tab" class="tab">
+          <div class="knowledge-container glass" id="knowledge-box">
+            <h2>Your Knowledge Base</h2>
+            <p>Upload documents to teach your AI new things.</p>
+            <div class="upload-container" style="margin-top: 20px;">
+              <div id="drop-zone" class="upload-drop-zone">
+                <div class="drop-zone-content">
+                  <span class="upload-icon">📤</span>
+                  <p class="drop-zone-text">Drag & drop files here or click to browse</p>
+                  <p class="drop-zone-subtext">Supports PDF, TXT, and MD up to 10MB</p>
+                  <p class="drop-zone-warning" style="color: #f87171; font-size: 12px; margin-top: 8px;">⚠️ Please do
+                    not upload sensitive documents.</p>
+                </div>
+                <input type="file" id="file-upload" accept=".txt,.md,.pdf" style="display: none;">
+              </div>
+
+              <div id="selected-file-container" class="selected-file-container" style="display: none;">
+                <div class="selected-file-info">
+                  <span class="file-icon">📄</span>
+                  <span id="selected-file-name" class="file-name">filename.txt</span>
+                  <span id="selected-file-size" class="file-size">(12 KB)</span>
+                </div>
+                <button onclick="uploadFile()" id="upload-btn" class="upload-action-btn">Upload and Index</button>
+              </div>
+
+              <!-- Upload Progress UI -->
+              <div id="upload-progress-container" class="upload-progress-container" style="display: none;">
+                <div class="upload-progress-header">
+                  <span id="upload-progress-status">Uploading and indexing document...</span>
+                  <span id="upload-progress-percent">0%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div id="progress-bar-fill" class="progress-bar-fill"></div>
+                </div>
+                <div id="upload-animation-spinner" class="upload-spinner" style="display: none;">
+                  <div class="spinner-ring"></div>
+                </div>
+              </div>
+            </div>
+            <h3 style="margin-top: 40px; margin-bottom: 10px;">Uploaded Documents</h3>
+            <div id="document-list" class="doc-list"></div>
+          </div>
+        </div>
+
+        <!-- Security Tab -->
+        <div id="security-tab" class="tab">
+          <div class="security-container glass" id="security-box">
+            <div class="security-header">
+              <h1>AI Security Hardening</h1>
+              <p>Monitor security events, system shields, and prompt injection logs.</p>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="security-stats-grid">
+              <div class="security-stat-card glass">
+                <span class="stat-icon font-high-red">🛡️</span>
+                <div class="stat-info">
+                  <span class="stat-value" id="stat-blocked-count">0</span>
+                  <span class="stat-label">Total Blocks</span>
+                </div>
+              </div>
+              <div class="security-stat-card glass">
+                <span class="stat-icon font-medium-orange">👁️</span>
+                <div class="stat-info">
+                  <span class="stat-value" id="stat-pii-count">0</span>
+                  <span class="stat-label">PII Redacted</span>
+                </div>
+              </div>
+              <div class="security-stat-card glass">
+                <span class="stat-icon font-low-green">⚡</span>
+                <div class="stat-info">
+                  <span class="stat-value" style="color: #10b981;">Active</span>
+                  <span class="stat-label">System Shields</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="security-layout-grid">
+              <!-- Active Shield Indicators -->
+              <div class="security-card glass">
+                <div class="card-header">
+                  <div class="card-icon">🔐</div>
+                  <div class="card-title-group">
+                    <h2>Active Shields</h2>
+                    <p>All core AI hardening modules are permanently enabled.</p>
+                  </div>
+                </div>
+                <div class="card-body shield-indicators">
+                  <div class="shield-indicator-item">
+                    <span class="shield-status-dot active"></span>
+                    <div class="shield-details">
+                      <h3>Heuristics Injection Guard</h3>
+                      <p>Blocks prompt overrides, leakage attempts, and jailbreak requests.</p>
+                    </div>
+                  </div>
+                  <div class="shield-indicator-item">
+                    <span class="shield-status-dot active"></span>
+                    <div class="shield-details">
+                      <h3>PII & Key Redactor</h3>
+                      <p>Automatically redacts phone numbers, emails, and API keys.</p>
+                    </div>
+                  </div>
+                  <div class="shield-indicator-item">
+                    <span class="shield-status-dot active"></span>
+                    <div class="shield-details">
+                      <h3>SQLite Rate Limiter</h3>
+                      <p>Limits rapid-fire API request abuse and message character limits.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Security Audit Log Table -->
+              <div class="security-card glass log-table-card">
+                <div class="card-header">
+                  <div class="card-icon">🗒️</div>
+                  <div class="card-title-group">
+                    <h2>Security Audit Logs</h2>
+                    <p>Real-time audit log of blocked threats and redacted events.</p>
+                  </div>
+                </div>
+                <div class="card-body log-table-body">
+                  <div class="log-table-wrapper">
+                    <table class="log-table">
+                      <thead>
+                        <tr>
+                          <th>Time</th>
+                          <th>Event Type</th>
+                          <th>Severity</th>
+                          <th>IP Address</th>
+                          <th>Details</th>
+                        </tr>
+                      </thead>
+                      <tbody id="security-log-tbody">
+                        <tr>
+                          <td colspan="5"
+                            style="text-align: center; color: var(--text-muted); font-style: italic; padding: 24px;">
+                            No security events logged yet.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Adaptive Security Section (Hermes) -->
+            <div class="security-adaptive-grid" style="margin-top: 24px;">
+              <!-- Hermes Rules Card -->
+              <div class="security-card glass">
+                <div class="card-header"
+                  style="justify-content: space-between; display: flex; align-items: center; width: 100%;">
+                  <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="card-icon">🧠</div>
+                    <div class="card-title-group">
+                      <h2>Hermes Adaptive Rules</h2>
+                      <p>Self-synthesized regex rules from security log analysis.</p>
+                    </div>
+                  </div>
+                  <button id="run-auditor-btn" class="primary-btn" onclick="triggerHermesAuditor()"
+                    style="margin: 0; padding: 8px 16px; font-size: 13px;">
+                    ⚡ Run Hermes Auditor
+                  </button>
+                </div>
+                <div class="card-body">
+                  <div id="hermes-rules-list" class="rules-list">
+                    <div
+                      style="color: var(--text-muted); font-size: 13px; font-style: italic; text-align: center; padding: 20px;">
+                      No adaptive rules synthesized yet. Run auditor to generate them.
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Semantic Attack Memory Card -->
+              <div class="security-card glass">
+                <div class="card-header">
+                  <div class="card-icon">💾</div>
+                  <div class="card-title-group">
+                    <h2>Semantic Attack Memory</h2>
+                    <p>Vector database cache of unique blocked prompt injection signatures.</p>
+                  </div>
+                </div>
+                <div class="card-body" style="padding: 0;">
+                  <div class="log-table-wrapper" style="max-height: 250px;">
+                    <table class="log-table">
+                      <thead>
+                        <tr>
+                          <th>Time</th>
+                          <th>Detected Via</th>
+                          <th>Attack Signature</th>
+                        </tr>
+                      </thead>
+                      <tbody id="semantic-memory-tbody">
+                        <tr>
+                          <td colspan="3"
+                            style="text-align: center; color: var(--text-muted); font-style: italic; padding: 20px;">
+                            No attack signatures cached in semantic memory yet.
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div id="settings-tab" class="tab">
+          <div class="settings-container glass" id="settings-box">
+            <div class="settings-header">
+              <h1>System Settings</h1>
+              <p>Configure your AI persona and developer resources.</p>
+            </div>
+
+            <div class="settings-grid">
+              <!-- AI Persona Card -->
+              <div class="settings-card glass">
+                <div class="card-header">
+                  <div class="card-icon">🧠</div>
+                  <div class="card-title-group">
+                    <h2>AI Persona</h2>
+                    <p>Define how your AI should behave and respond.</p>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <textarea id="persona-input"
+                    placeholder="e.g. You are a helpful assistant who responds clearly and concisely..."></textarea>
+                  <div class="action-row">
+                    <button class="primary-btn" onclick="savePersona()">
+                      <span class="btn-icon">💾</span> Save Persona
+                    </button>
+                    <div id="persona-status" class="status-msg"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- API Keys Card -->
+              <div class="settings-card glass">
+                <div class="card-header">
+                  <div class="card-icon">🔑</div>
+                  <div class="card-title-group">
+                    <h2>Developer API Keys</h2>
+                    <p>Access the OpenRouter-compatible endpoint at <code>/api/chat/completions</code>.</p>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="api-actions">
+                    <button class="sec-btn" onclick="generateApiKey()">
+                      <span class="btn-icon">➕</span> Generate New Key
+                    </button>
+                  </div>
+                  <ul id="api-key-list" class="api-key-list"></ul>
+                </div>
+              </div>
+
+              <!-- API Tutorial Card -->
+              <div class="settings-card glass">
+                <div class="card-header">
+                  <div class="card-icon">📖</div>
+                  <div class="card-title-group">
+                    <h2>API Reference & Tutorial</h2>
+                    <p>Learn how to query the completions endpoint.</p>
+                  </div>
+                </div>
+                <div class="card-body" style="gap: 20px;">
+                  <!-- Endpoint Section -->
+                  <div class="endpoint-section">
+                    <span class="section-label">API Endpoint</span>
+                    <div class="endpoint-url-box">
+                      <code id="api-endpoint-url">/api/chat/completions</code>
+                      <button class="copy-url-btn" onclick="copyEndpointUrl()" title="Copy Endpoint URL">📋</button>
+                    </div>
+                  </div>
+
+                  <!-- Code Snippets Section -->
+                  <div class="tutorial-tabs-section">
+                    <span class="section-label">Code Tutorial</span>
+                    <div class="tutorial-tabs">
+                      <button class="tab-btn active" onclick="switchTutorialTab('curl')">cURL</button>
+                      <button class="tab-btn" onclick="switchTutorialTab('js')">JavaScript</button>
+                      <button class="tab-btn" onclick="switchTutorialTab('python')">Python</button>
+                    </div>
+                    <div class="tutorial-code-container">
+                      <pre id="tutorial-code-block" class="tutorial-code"><code class="language-bash">curl -X POST https://chatbot.kagita.my.id/api/chat/completions \
+  -H "Authorization: Bearer YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Hello, how are you?",
+    "chatId": 1
+  }'</code></pre>
+                      <button class="copy-code-btn" onclick="copyTutorialCode()" title="Copy Snippet">Copy</button>
+                    </div>
+                  </div>
+
+                  <div class="api-notes">
+                    <p><strong>Info:</strong> <code>chatId</code> (number, optional) links the request to an existing
+                      chat session to retrieve context & save history. Omit for a one-off query.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="components/ChatDeletePopup.js"></script>
+  <script src="components/Notification.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

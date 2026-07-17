@@ -1,0 +1,36 @@
+{
+  "doc-1030b6eb5bf9cdf7153a5ce7fa06e704": {
+    "content": "Testing embedding dimension auto-detection.",
+    "file_path": "unknown_source",
+    "parse_format": "raw",
+    "content_hash": "1030b6eb5bf9cdf7153a5ce7fa06e704",
+    "chunk_options": {
+      "chunk_token_size": 1200,
+      "fixed_token": {
+        "split_by_character": null,
+        "split_by_character_only": false,
+        "chunk_overlap_token_size": 100
+      }
+    },
+    "create_time": 1784248341,
+    "update_time": 1784248341,
+    "_id": "doc-1030b6eb5bf9cdf7153a5ce7fa06e704"
+  },
+  "doc-f2259393bbdc5e950df79a0ed459d818": {
+    "content": "PT  Rafita  Product  Launch  and  Bundling  Strategy  -  Q3  2026  \nThis  document  outlines  the  strategic  bundling  and  promotional  plans  for  Q3  2026.  The  \nstrategies\n \nbelow\n \nare\n \ndesigned\n \nto\n \noptimize\n \nour\n \ncurrent\n \ninventory\n \nlisted\n \nin\n \nthe\n \nPT\n \nRafita\n \nProduct\n \nand\n \nPrice\n \nCatalog.\n  \n1.  Strategic  Product  Bundles  \nTo  increase  the  average  order  value  and  move  lower-stock  items  alongside  high-stock  items,  we  \nare\n \nintroducing\n \nthe\n \nfollowing\n \npackages:\n ●  The  WFH  Pro  Kit:  Designed  for  remote  workers.  This  bundle  includes  the  Rafita  \nMechanical\n \nKeyboard\n \n(RAF-KBD-MECH)\n,\n \nRafita\n \nOffice\n \nDesk\n \nMat\n \n(RAF-MAT-01)\n,\n \nand\n \nRafita\n \nFast\n \nCharger\n \n65W\n \n(RAF-CHG-65)\n.\n \nNote:\n \nDue\n \nto\n \nthe\n \nmechanical\n \nkeyboard's\n \nlimited\n \nstock\n \n(85\n \nunits),\n \nthis\n \nbundle\n \nwill\n \nbe\n \ncapped\n \nat\n \n50\n \npackages.\n ●  The  Urban  Commuter:  Targeted  at  students  and  daily  commuters.  This  package  \ncombines\n \nthe\n \nRafita\n \nBackpack\n \nNeo\n \n(RAF-BPK-NEO)\n \nand\n \nthe\n \nRafita\n \nTumbler\n \nSwiss\n \nEdition\n \n(RAF-TMB-SW)\n.\n \nWe\n \nhave\n \nample\n \nstock\n \n(over\n \n200\n \nunits\n \neach),\n \nso\n \nthis\n \nwill\n \nbe\n \nour\n \nmain\n \nvolume\n \ndriver.\n ●  The  Audio-Active  Set:  A  pairing  of  the  Rafita  Smartwatch  V1  (RAF-SMW-01)  and  Rafita  \nWireless\n \nEarbuds\n \n(RAF-TWS-01)\n \nfor\n \nfitness\n \nenthusiasts.\n  \n2.  Exclusive  VIP  Campaign  \nWe  currently  hold  exactly  60  units  of  the  Rafita  Smart  Home  Hub  (RAF-HUB-01) .  Instead  of  a  \ngeneral\n \nrelease,\n \nwe\n \nwill\n \nposition\n \nthis\n \nas\n \nan\n \nultra-premium\n \nitem.\n ●  Channel:  Email  Marketing.  ●  Target:  Top  100  members  of  the  \"Rafita  Closer\"  loyalty  program.  ●  Offer:  Early  access  to  the  Smart  Home  Hub  before  public  release.   \n3.  Channel  Allocation  &  Budget  Focus  \nBased  on  our  past  performance,  we  will  allocate  our  marketing  budget  for  these  bundles  as  \nfollows:\n \nBundle  Name  Primary  Marketing  Channel  Target  Demographic  \n  \nThe  WFH  Pro  Kit  Google  Ads  (Search)  Professionals,  Tech  Enthusiasts  \nThe  Urban  Commuter  TikTok  &  Instagram  Ads  Students,  Millennials  \n \n4.  Logistics  &  Supply  Chain  Integration  \nOrder  fulfillment  for  Eastern  Indonesia  will  be  prioritized  through  the  new  Makassar  logistics  \nhub.\n \nThe\n \nUrban\n \nCommuter\n \nbundle\n \nwill\n \nhave\n \n30%\n \nof\n \nits\n \ndedicated\n \nstock\n \npre-positioned\n \nat\n \nthe\n \nMakassar\n \nhub\n \nby\n \nAugust\n \n2026\n \nto\n \nensure\n \nfast\n \ndelivery.",
+    "file_path": "unknown_source",
+    "parse_format": "raw",
+    "content_hash": "f2259393bbdc5e950df79a0ed459d818",
+    "chunk_options": {
+      "chunk_token_size": 1200,
+      "fixed_token": {
+        "split_by_character": null,
+        "split_by_character_only": false,
+        "chunk_overlap_token_size": 100
+      }
+    },
+    "create_time": 1784248982,
+    "update_time": 1784248982,
+    "_id": "doc-f2259393bbdc5e950df79a0ed459d818"
+  }
+}

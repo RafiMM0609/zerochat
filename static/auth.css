@@ -1,0 +1,442 @@
+/* ==========================================================================
+   Split-Screen Login Design
+   Left: clean white form | Right: abstract geometric art
+   ========================================================================== */
+
+#auth-view {
+  display: none;
+  background: #0b1219;
+}
+
+#auth-view.active {
+  display: flex;
+}
+
+.auth-split {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+/* ==========================================================================
+   Left Panel — Login Form (dark, matching right panel)
+   ========================================================================== */
+.auth-form-panel {
+  flex: 0 0 50%;
+  background: #141b2b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px;
+}
+
+.auth-form-inner {
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-logo-sm {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: #2dd4bf;
+  margin-bottom: 48px;
+}
+
+.auth-welcome {
+  font-size: 32px;
+  font-weight: 800;
+  color: #f1f5f9;
+  letter-spacing: -0.03em;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.auth-subtitle {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 36px;
+  line-height: 1.5;
+}
+
+/* --- Form Fields --- */
+.auth-field {
+  margin-bottom: 20px;
+}
+
+.auth-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 6px;
+}
+
+.auth-field .required {
+  color: #ef4444;
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #e2e8f0;
+  background: #0f172a;
+  outline: none;
+  transition: all 0.2s;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.auth-field input::placeholder {
+  color: #475569;
+}
+
+.auth-field input:focus {
+  border-color: #2dd4bf;
+  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.12);
+}
+
+/* --- Primary Button --- */
+.auth-btn-primary {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2dd4bf;
+  color: #0f172a;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  margin-top: 8px;
+}
+
+.auth-btn-primary:hover {
+  background: #5eead4;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(45, 212, 191, 0.25);
+}
+
+.auth-btn-primary:active {
+  transform: translateY(0);
+}
+
+/* --- Divider --- */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 24px 0;
+  color: #475569;
+  font-size: 13px;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #1e293b;
+}
+
+/* --- Guest Button --- */
+.auth-btn-google {
+  width: 100%;
+  padding: 11px;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  background: #0f172a;
+  color: #94a3b8;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.auth-btn-google:hover {
+  background: #1a2332;
+  border-color: #334155;
+  color: #e2e8f0;
+}
+
+/* --- Toggle Auth Mode --- */
+.toggle-auth {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 14px;
+  color: #64748b;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.toggle-auth:hover {
+  color: #94a3b8;
+}
+
+.toggle-auth strong {
+  color: #2dd4bf;
+}
+
+.toggle-auth:hover strong {
+  color: #5eead4;
+}
+
+/* ==========================================================================
+   Right Panel — Abstract Geometric Art
+   ========================================================================== */
+.auth-art-panel {
+  flex: 0 0 50%;
+  background: linear-gradient(160deg, #0b1219 0%, #111d2b 40%, #0f172a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-art-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* --- Geometric Elements --- */
+.geo {
+  position: absolute;
+  border-radius: 4px;
+}
+
+/* Rectangles */
+.geo-rect-1 {
+  width: 120px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.3), rgba(45, 212, 191, 0.1));
+  border: 1px solid rgba(45, 212, 191, 0.2);
+  top: 12%;
+  right: 22%;
+  transform: rotate(12deg);
+  animation: geoFloat1 8s ease-in-out infinite;
+}
+
+.geo-rect-2 {
+  width: 64px;
+  height: 64px;
+  background: rgba(129, 140, 248, 0.15);
+  border: 1px solid rgba(129, 140, 248, 0.25);
+  bottom: 20%;
+  left: 18%;
+  transform: rotate(-8deg);
+  animation: geoFloat2 7s ease-in-out infinite;
+}
+
+/* Triangles via clip-path */
+.geo-tri-1 {
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(251, 191, 36, 0.05));
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  top: 25%;
+  left: 12%;
+  animation: geoFloat3 9s ease-in-out infinite;
+}
+
+.geo-tri-2 {
+  width: 50px;
+  height: 50px;
+  background: rgba(248, 113, 113, 0.15);
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  bottom: 30%;
+  right: 15%;
+  transform: rotate(180deg);
+  animation: geoFloat1 6s ease-in-out infinite;
+}
+
+/* Circles */
+.geo-circle-1 {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(45, 212, 191, 0.2);
+  top: 45%;
+  right: 30%;
+  animation: geoFloat2 10s ease-in-out infinite;
+}
+
+.geo-circle-2 {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(251, 191, 36, 0.3);
+  bottom: 40%;
+  left: 35%;
+  animation: geoFloat3 7s ease-in-out infinite;
+}
+
+/* Semicircles */
+.geo-semi-1 {
+  width: 60px;
+  height: 30px;
+  background: rgba(129, 140, 248, 0.2);
+  border-radius: 60px 60px 0 0;
+  top: 60%;
+  right: 10%;
+  animation: geoFloat1 11s ease-in-out infinite;
+}
+
+.geo-semi-2 {
+  width: 40px;
+  height: 20px;
+  background: rgba(45, 212, 191, 0.15);
+  border-radius: 0 0 40px 40px;
+  top: 18%;
+  left: 30%;
+  animation: geoFloat2 8s ease-in-out infinite;
+}
+
+/* Dot grid */
+.geo-dot-grid {
+  width: 80px;
+  height: 80px;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.1) 1.5px, transparent 1.5px);
+  background-size: 12px 12px;
+  top: 35%;
+  left: 45%;
+  opacity: 0.6;
+}
+
+/* Wavy line */
+.geo-wavy {
+  width: 120px;
+  height: 4px;
+  background: none;
+  bottom: 15%;
+  right: 25%;
+  overflow: visible;
+}
+
+.geo-wavy::after {
+  content: '';
+  display: block;
+  width: 120px;
+  height: 20px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 20'%3E%3Cpath d='M0,10 Q15,0 30,10 T60,10 T90,10 T120,10' stroke='rgba(45,212,191,0.2)' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+  background-size: 120px 20px;
+  opacity: 0.5;
+}
+
+/* Star */
+.geo-star {
+  width: 24px;
+  height: 24px;
+  top: 20%;
+  right: 40%;
+  background: rgba(251, 191, 36, 0.3);
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: geoFloat3 6s ease-in-out infinite;
+}
+
+/* Dashes */
+.geo-dash {
+  height: 2px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 1px;
+}
+
+.geo-dash-1 {
+  width: 60px;
+  top: 30%;
+  right: 50%;
+  transform: rotate(30deg);
+}
+
+.geo-dash-2 {
+  width: 40px;
+  top: 70%;
+  left: 25%;
+  transform: rotate(-20deg);
+}
+
+.geo-dash-3 {
+  width: 80px;
+  bottom: 35%;
+  right: 35%;
+  transform: rotate(45deg);
+}
+
+/* --- Brand on art panel --- */
+.art-brand {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  color: rgba(255,255,255,0.12);
+  position: absolute;
+  bottom: 48px;
+  left: 48px;
+}
+
+.art-tagline {
+  font-size: 12px;
+  color: rgba(255,255,255,0.07);
+  position: absolute;
+  bottom: 28px;
+  left: 48px;
+  margin: 0;
+  letter-spacing: 0.05em;
+}
+
+/* --- Float Animations --- */
+@keyframes geoFloat1 {
+  0%, 100% { transform: rotate(12deg) translateY(0) translateX(0); }
+  33% { transform: rotate(8deg) translateY(-12px) translateX(6px); }
+  66% { transform: rotate(14deg) translateY(6px) translateX(-4px); }
+}
+
+@keyframes geoFloat2 {
+  0%, 100% { transform: rotate(-8deg) translateY(0); }
+  50% { transform: rotate(-4deg) translateY(-14px); }
+}
+
+@keyframes geoFloat3 {
+  0%, 100% { transform: rotate(0) translateY(0); }
+  50% { transform: rotate(5deg) translateY(-10px); }
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+@media (max-width: 768px) {
+  .auth-split {
+    flex-direction: column;
+  }
+
+  .auth-form-panel {
+    flex: 1;
+    padding: 32px 24px;
+    background: #0f172a;
+    align-items: flex-start;
+  }
+
+  .auth-art-panel {
+    display: none;
+  }
+
+  .auth-logo-sm {
+    margin-bottom: 32px;
+  }
+
+  .auth-welcome {
+    font-size: 26px;
+  }
+}
