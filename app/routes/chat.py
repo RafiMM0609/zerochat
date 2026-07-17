@@ -20,6 +20,8 @@ class ChatCreateSchema(BaseModel):
 class MessageSchema(BaseModel):
     message: str
     chatId: Optional[int] = None
+    query_mode: Optional[str] = "mix"
+    rerank: Optional[bool] = True
 
 async def generate_chat_title(message_text: str) -> str:
     title_models = [
@@ -122,7 +124,9 @@ async def handle_chat_completion_stream(
     message: str,
     chat_id: Optional[int],
     ip_address: str,
-    is_developer_api: bool = False
+    is_developer_api: bool = False,
+    query_mode: str = "mix",
+    rerank: bool = True
 ):
     user_id = user['id']
     
@@ -142,14 +146,21 @@ async def handle_chat_completion_stream(
         # 2. Retrieve context from LightRAG
         yield f"data: {json.dumps({'progress': 'Mencari informasi di database...'})}\n\n"
         try:
-            rag = await get_user_rag(user_id)
-            # Retrieve RAG context using Mix mode, only need context string
-            context = await rag.aquery(
-                final_message,
-                param=QueryParam(mode="mix", only_need_context=True)
-            )
-            # Sanitize tag characters matching original JS escapes
-            context = context.replace("</dokumen>", "[escaped_tag]").replace("<dokumen>", "[escaped_tag]")
+            if query_mode == "bypass":
+                context = ""
+            else:
+                rag = await get_user_rag(user_id)
+                # Retrieve RAG context using chosen mode and enable_rerank settings
+                context = await rag.aquery(
+                    final_message,
+                    param=QueryParam(
+                        mode=query_mode,
+                        enable_rerank=rerank,
+                        only_need_context=True
+                    )
+                )
+                # Sanitize tag characters matching original JS escapes
+                context = context.replace("</dokumen>", "[escaped_tag]").replace("<dokumen>", "[escaped_tag]")
         except Exception as e:
             print("[RAG] Error retrieving context from LightRAG:", e)
             context = ""
@@ -263,7 +274,7 @@ async def handle_chat_completion_stream(
                 print("[Chat API] Error saving chat history:", history_err)
                 
         yield "data: [DONE]\n\n"
-
+ 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
 
 @router.post("/stream")
@@ -285,7 +296,9 @@ async def chat_stream(
         message=payload.message,
         chat_id=payload.chatId,
         ip_address=ip_address,
-        is_developer_api=False
+        is_developer_api=False,
+        query_mode=payload.query_mode,
+        rerank=payload.rerank
     )
 
 @router.post("/completions")
@@ -306,5 +319,7 @@ async def developer_completions(
         message=payload.message,
         chat_id=payload.chatId,
         ip_address=ip_address,
-        is_developer_api=True
+        is_developer_api=True,
+        query_mode=payload.query_mode,
+        rerank=payload.rerank
     )

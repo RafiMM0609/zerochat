@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 JWT_SECRET = os.getenv("JWT_SECRET", "supersecret")
-PORT = int(os.getenv("PORT", "3000"))
+PORT = int(os.getenv("PORT", "3101"))
 ENABLE_TOPIC_HARDENING = os.getenv("ENABLE_TOPIC_HARDENING", "true").lower() == "true"
 
 EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "openrouter")

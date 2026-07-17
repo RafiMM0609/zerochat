@@ -84,7 +84,7 @@ async function toggleAuthMode() {
   isFlipping = true;
 
   const formInner = document.querySelector('.auth-form-inner');
-  
+
   // Fade out
   if (formInner) await animate(formInner, { opacity: [1, 0], y: [0, -8] }, { duration: 0.15, easing: "ease-in" }).finished;
 
@@ -97,7 +97,7 @@ async function toggleAuthMode() {
 
   // Fade in
   if (formInner) await animate(formInner, { opacity: [0, 1], y: [8, 0] }, { duration: 0.2, easing: "ease-out" }).finished;
-  
+
   isFlipping = false;
 }
 
@@ -196,6 +196,13 @@ function toggleSidebar() {
   sidebarCollapsed = !sidebarCollapsed;
   sidebar.classList.toggle('collapsed', sidebarCollapsed);
   localStorage.setItem('agnostic_sidebar', sidebarCollapsed ? 'collapsed' : '');
+
+  // Update indicator visibility after toggle
+  const activeLi = document.querySelector('.nav-links li.active');
+  if (activeLi) {
+    // Small delay so CSS transition width has updated before recalculating
+    setTimeout(() => updateNavIndicator(activeLi, true), 320);
+  }
 }
 
 function showMainApp() {
@@ -387,7 +394,7 @@ function switchTab(tabId, silent = false) {
   const targetTab = document.getElementById(tabId + '-tab');
   if (!targetTab) return;
   targetTab.classList.add('active');
-  
+
   const targetLi = document.getElementById('nav-' + tabId);
   if (targetLi) {
     targetLi.classList.add('active');
@@ -487,7 +494,17 @@ function updateNavIndicator(targetLi, immediate = false) {
     return;
   }
 
-  const top = targetLi.offsetTop;
+  // Calculate offsetTop relative to the nav-links ul container
+  // This avoids issues caused by non-li elements (like #chat-sessions-list div) inside the ul
+  const navUl = indicator.parentElement;
+  let top = 0;
+  if (navUl) {
+    const navRect = navUl.getBoundingClientRect();
+    const liRect = targetLi.getBoundingClientRect();
+    top = liRect.top - navRect.top;
+  } else {
+    top = targetLi.offsetTop;
+  }
   const height = targetLi.offsetHeight;
 
   indicator.style.opacity = '1';
@@ -529,13 +546,13 @@ async function updateStatus() {
     if (!res.ok) throw new Error();
     const data = await res.json();
 
-    ['db','openrouter','embedding'].forEach((key) => {
+    ['db', 'openrouter', 'embedding'].forEach((key) => {
       const overview = document.getElementById('status-' + key + '-overview');
       const ok = key === 'embedding' ? !!data.embedding : !!data[key];
       if (overview) updateStatusDot('status-' + key + '-overview', ok);
     });
   } catch (err) {
-    ['db','openrouter','embedding'].forEach((key) => {
+    ['db', 'openrouter', 'embedding'].forEach((key) => {
       updateStatusDot('status-' + key + '-overview', false);
     });
   }
@@ -555,6 +572,27 @@ let activeChatId = null;
 const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('chat-input');
 const chatHistory = document.getElementById('chat-history');
+const queryModeSelect = document.getElementById('chat-query-mode');
+const rerankCheckbox = document.getElementById('chat-rerank');
+
+// Load query settings from localStorage
+if (queryModeSelect) {
+  const savedMode = localStorage.getItem('agnostic_query_mode');
+  if (savedMode) queryModeSelect.value = savedMode;
+  queryModeSelect.addEventListener('change', () => {
+    localStorage.setItem('agnostic_query_mode', queryModeSelect.value);
+  });
+}
+
+if (rerankCheckbox) {
+  const savedRerank = localStorage.getItem('agnostic_rerank');
+  if (savedRerank !== null) {
+    rerankCheckbox.checked = savedRerank === 'true';
+  }
+  rerankCheckbox.addEventListener('change', () => {
+    localStorage.setItem('agnostic_rerank', rerankCheckbox.checked.toString());
+  });
+}
 
 async function loadChatSessions() {
   try {
@@ -565,7 +603,7 @@ async function loadChatSessions() {
     if (selector) selector.innerHTML = '<option value="">Select a chat...</option>';
     if (!list) return;
     list.innerHTML = '';
-    
+
     if (data.chats) {
       data.chats.forEach(c => {
         const div = document.createElement('div');
@@ -585,15 +623,15 @@ async function loadChatSessions() {
           div.style.background = 'rgba(255,255,255,0.1)';
           div.style.borderColor = 'rgba(255,255,255,0.2)';
         }
-        
+
         div.addEventListener('mouseenter', () => { if (c.id !== activeChatId) div.style.background = 'rgba(255,255,255,0.05)'; });
         div.addEventListener('mouseleave', () => { if (c.id !== activeChatId) div.style.background = 'transparent'; });
-        
+
         div.innerHTML = `
           <span style="flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(c.title || 'New Chat')}</span>
           <span class="delete-chat-btn" style="padding: 2px 6px; border-radius: 4px; background: rgba(239, 68, 68, 0.1); color: #ef4444; font-size: 10px; font-weight: 600; cursor: pointer;" title="Delete Chat">DEL</span>
         `;
-        
+
         div.addEventListener('click', (e) => {
           if (e.target.closest('.delete-chat-btn')) {
             deleteChat(c.id);
@@ -601,7 +639,7 @@ async function loadChatSessions() {
             selectChat(c.id, c.title);
           }
         });
-        
+
         list.appendChild(div);
 
         if (selector) {
@@ -660,7 +698,7 @@ async function createNewChat(title = 'New Chat') {
       headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
       body: JSON.stringify({ title })
     });
-    
+
     if (res.status === 403) {
       const data = await res.json();
       if (data.requireDelete && window.chatDeletePopup) {
@@ -668,7 +706,7 @@ async function createNewChat(title = 'New Chat') {
       }
       return null;
     }
-    
+
     const data = await res.json();
     if (data.id) {
       await loadChatSessions();
@@ -689,11 +727,11 @@ async function selectChat(id, title) {
   const headerTitle = document.getElementById('active-chat-title');
   if (header) header.style.display = 'flex';
   if (headerTitle) headerTitle.innerText = title;
-  
+
   const historyEl = document.getElementById('chat-history');
   if (historyEl) historyEl.innerHTML = '';
   await loadChatSessions(); // update active styling
-  
+
   // load messages
   try {
     const res = await fetch(API_BASE + `/chat/${id}/messages`, { headers: { 'Authorization': `Bearer ${token}` } });
@@ -791,13 +829,21 @@ chatForm.addEventListener('submit', async (e) => {
   let aiText = '';
 
   try {
+    const queryModeVal = queryModeSelect ? queryModeSelect.value : 'mix';
+    const rerankVal = rerankCheckbox ? rerankCheckbox.checked : true;
+
     const res = await fetch(API_BASE + '/chat/stream', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ message: text, chatId: activeChatId })
+      body: JSON.stringify({
+        message: text,
+        chatId: activeChatId,
+        query_mode: queryModeVal,
+        rerank: rerankVal
+      })
     });
 
     if (!res.ok) throw new Error('Failed to fetch from server');
@@ -839,9 +885,9 @@ chatForm.addEventListener('submit', async (e) => {
               const msgContent = aiMessageDiv.querySelector('.msg-content');
               if (msgContent) msgContent.innerHTML = renderMarkdown(aiText);
             } else if (data.newTitle) {
-               const titleEl = document.getElementById('active-chat-title');
-               if (titleEl) titleEl.innerText = data.newTitle;
-               loadChatSessions(); // Update the sidebar
+              const titleEl = document.getElementById('active-chat-title');
+              if (titleEl) titleEl.innerText = data.newTitle;
+              loadChatSessions(); // Update the sidebar
             }
             chatHistory.scrollTop = chatHistory.scrollHeight;
           } catch (e) { }
@@ -941,18 +987,18 @@ let firstApiKey = 'YOUR_API_KEY';
 function updateTutorialSnippets() {
   const origin = window.location.origin;
   const endpoint = `${origin}/api/chat/completions`;
-  
+
   const endpointEl = document.getElementById('api-endpoint-url');
   if (endpointEl) {
     endpointEl.innerText = endpoint;
   }
-  
+
   const codeBlock = document.getElementById('tutorial-code-block');
   if (!codeBlock) return;
-  
+
   let code = '';
   let langClass = '';
-  
+
   if (currentTutorialTab === 'curl') {
     langClass = 'language-bash';
     code = `curl -X POST ${endpoint} \\
@@ -1025,23 +1071,23 @@ for line in response.iter_lines():
             except Exception:
                 pass`;
   }
-  
+
   codeBlock.innerHTML = `<code class="${langClass}">${escapeHtml(code)}</code>`;
 }
 
 function switchTutorialTab(tabId) {
   currentTutorialTab = tabId;
-  
+
   const buttons = document.querySelectorAll('.tutorial-tabs .tab-btn');
   buttons.forEach(btn => {
     btn.classList.remove('active');
   });
-  
+
   const activeBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick')?.includes(tabId));
   if (activeBtn) {
     activeBtn.classList.add('active');
   }
-  
+
   updateTutorialSnippets();
 }
 
@@ -1061,13 +1107,13 @@ function copyTutorialCode() {
 async function loadApiKeys() {
   const res = await fetch(API_BASE + '/settings/api-keys', { headers: { 'Authorization': `Bearer ${token}` } });
   const data = await res.json();
-  
+
   if (data.keys && data.keys.length > 0) {
     firstApiKey = data.keys[0].key;
   } else {
     firstApiKey = 'YOUR_API_KEY';
   }
-  
+
   updateTutorialSnippets();
 
   const list = document.getElementById('api-key-list');
@@ -1082,7 +1128,7 @@ async function loadApiKeys() {
         <button class="delete-key-btn" title="Delete API Key" aria-label="Delete API Key">🗑️</button>
       </div>
     `;
-    
+
     li.querySelector('.copy-key-btn').addEventListener('click', (e) => {
       copyToClipboard(k.key, e.currentTarget);
     });
@@ -1123,7 +1169,7 @@ async function loadDocuments() {
   const data = await res.json();
   const list = document.getElementById('document-list');
   list.innerHTML = '';
-  
+
   if (data.documents.length === 0) {
     list.innerHTML = '<div style="color: var(--text-muted); font-size: 14px; font-style: italic; text-align: center; padding: 20px;">No documents uploaded yet.</div>';
     return;
@@ -1132,10 +1178,10 @@ async function loadDocuments() {
   data.documents.forEach((doc, index) => {
     const div = document.createElement('div');
     div.className = 'doc-item';
-    
+
     const isPdf = doc.file_type === 'application/pdf' || doc.filename.toLowerCase().endsWith('.pdf');
     const docType = isPdf ? 'PDF' : 'TXT';
-    
+
     div.innerHTML = `
       <div class="doc-info">
         <span class="doc-icon" style="background:${isPdf ? 'rgba(239,68,68,0.15)' : 'rgba(113,113,122,0.2)'}; color:${isPdf ? '#f87171' : '#a1a1aa'}; font-size:10px; font-weight:700;">${docType}</span>
@@ -1156,9 +1202,9 @@ async function loadDocuments() {
     list.appendChild(div);
 
     // Stagger animation for document items
-    animate(div, { opacity: [0, 1], y: [15, 0] }, { 
-      duration: 0.3, 
-      delay: index * 0.05 
+    animate(div, { opacity: [0, 1], y: [15, 0] }, {
+      duration: 0.3,
+      delay: index * 0.05
     });
   });
 }
@@ -1294,7 +1340,7 @@ async function uploadFile() {
   progressStatus.innerText = 'Uploading and processing document...';
   if (status) status.innerText = '';
 
-  let progressAnimation = animate(progressFill, { width: ['0%', '90%'] }, { 
+  let progressAnimation = animate(progressFill, { width: ['0%', '90%'] }, {
     duration: 3.5,
     easing: "ease-out"
   });
@@ -1321,7 +1367,7 @@ async function uploadFile() {
       progressPercent.innerText = '100%';
       progressStatus.innerText = 'Upload complete! Document indexed.';
       showNotification('Document uploaded and indexed successfully!', 'success');
-      
+
       animate(progressFill, { width: '100%' }, { duration: 0.3 });
       uploadSpinner.style.display = 'none';
       progressFill.style.background = '#10b981';
@@ -1341,8 +1387,9 @@ async function uploadFile() {
 
     } else {
       const data = await res.json();
-      progressStatus.innerText = 'Error: ' + data.error;
-      showNotification('Error: ' + data.error, 'error');
+      const errMsg = data.detail || data.message || 'Unknown error occurred';
+      progressStatus.innerText = 'Error: ' + errMsg;
+      showNotification('Error: ' + errMsg, 'error');
       progressFill.style.background = '#ef4444';
       uploadSpinner.style.display = 'none';
     }
@@ -1372,7 +1419,7 @@ async function loadSecurityStats() {
     });
     if (!res.ok) throw new Error();
     const data = await res.json();
-    
+
     const blockedEl = document.getElementById('stat-blocked-count');
     if (blockedEl) blockedEl.innerText = data.blockedCount || 0;
     const piiEl = document.getElementById('stat-pii-count');
@@ -1401,11 +1448,11 @@ async function loadSecurityLogs() {
     });
     if (!res.ok) throw new Error();
     const data = await res.json();
-    
+
     const auditContainer = document.getElementById('security-log-tbody-audit');
     if (!auditContainer) return;
     auditContainer.innerHTML = '';
-    
+
     if (!data.logs || data.logs.length === 0) {
       auditContainer.innerHTML = `
         <div class="audit-row">
@@ -1416,31 +1463,31 @@ async function loadSecurityLogs() {
       `;
       return;
     }
-    
+
     data.logs.forEach((log, index) => {
       const row = document.createElement('div');
       row.className = 'audit-row';
-      
+
       const timeStr = new Date(log.created_at).toLocaleString();
       const ipStr = log.ip_address || 'N/A';
-      
+
       let tagClass = 'tag-ok';
       let tagText = 'ALLOW';
       if (log.event_type === 'PROMPT_INJECTION') { tagClass = 'tag-block'; tagText = 'BLOCK'; }
       else if (log.event_type === 'ABUSE_RATE_LIMIT') { tagClass = 'tag-block'; tagText = 'BLOCK'; }
       else if (log.event_type === 'PII_REDACTION') { tagClass = 'tag-redact'; tagText = 'REDACT'; }
-      
+
       row.innerHTML = `
         <span class="a-time">${timeStr}</span>
         <span class="a-tag ${tagClass}">${tagText}</span>
         <span class="a-msg">${escapeHtml(log.details || log.event_type)}</span>
       `;
-      
+
       auditContainer.appendChild(row);
-      
-      animate(row, { opacity: [0, 1], x: [-10, 0] }, { 
-        duration: 0.25, 
-        delay: Math.min(index * 0.03, 0.6) 
+
+      animate(row, { opacity: [0, 1], x: [-10, 0] }, {
+        duration: 0.25,
+        delay: Math.min(index * 0.03, 0.6)
       });
     });
   } catch (e) {
@@ -1455,11 +1502,11 @@ async function loadSecurityRules() {
     });
     if (!res.ok) throw new Error();
     const data = await res.json();
-    
+
     const listEl = document.getElementById('hermes-rules-list');
     if (!listEl) return;
     listEl.innerHTML = '';
-    
+
     if (data.rules.length === 0) {
       listEl.innerHTML = `
         <div style="color: var(--text-muted); font-size: 13px; font-style: italic; text-align: center; padding: 20px;">
@@ -1468,14 +1515,14 @@ async function loadSecurityRules() {
       `;
       return;
     }
-    
+
     data.rules.forEach((rule, index) => {
       const div = document.createElement('div');
       div.className = 'rule-item glass';
-      
+
       const statusClass = `status-${rule.status.toLowerCase()}`;
       const timeStr = new Date(rule.created_at).toLocaleDateString();
-      
+
       let actionButtons = '';
       if (rule.status === 'pending') {
         actionButtons = `
@@ -1487,7 +1534,7 @@ async function loadSecurityRules() {
           <button class="rule-action-btn delete-btn" onclick="deleteRule(${rule.id})" title="Delete Rule">DEL</button>
         `;
       }
-      
+
       div.innerHTML = `
         <div class="rule-meta">
           <div class="rule-title-row">
@@ -1502,7 +1549,7 @@ async function loadSecurityRules() {
           ${actionButtons}
         </div>
       `;
-      
+
       listEl.appendChild(div);
       animate(div, { opacity: [0, 1], y: [10, 0] }, { duration: 0.25, delay: Math.min(index * 0.05, 0.5) });
     });
@@ -1566,7 +1613,7 @@ async function deleteRule(id) {
 async function triggerHermesAuditor() {
   const btn = document.getElementById('run-auditor-btn');
   if (!btn) return;
-  
+
   const originalText = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = '⏳ Auditing Log...';
@@ -1600,11 +1647,11 @@ async function loadBlockedAttacks() {
     });
     if (!res.ok) throw new Error();
     const data = await res.json();
-    
+
     const tbody = document.getElementById('semantic-memory-tbody');
     if (!tbody) return;
     tbody.innerHTML = '';
-    
+
     if (data.attacks.length === 0) {
       tbody.innerHTML = `
         <tr>
@@ -1615,14 +1662,14 @@ async function loadBlockedAttacks() {
       `;
       return;
     }
-    
+
     data.attacks.forEach((attack, index) => {
       const tr = document.createElement('tr');
       const timeStr = new Date(attack.created_at).toLocaleString();
-      
+
       let badgeClass = 'event-injection';
       if (attack.detected_via === 'semantic_memory') badgeClass = 'event-pii';
-      
+
       tr.innerHTML = `
         <td style="white-space: nowrap; color: var(--text-muted);">${timeStr}</td>
         <td><span class="badge ${badgeClass}">${attack.detected_via}</span></td>
@@ -1630,7 +1677,7 @@ async function loadBlockedAttacks() {
           ${escapeHtml(attack.original_prompt)}
         </td>
       `;
-      
+
       tbody.appendChild(tr);
       animate(tr, { opacity: [0, 1], x: [-10, 0] }, { duration: 0.25, delay: Math.min(index * 0.03, 0.5) });
     });
@@ -1693,8 +1740,8 @@ let sigmaInstance = null;
 
 function hexToRgb(hex) {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? 
-    `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+  return result ?
+    `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` :
     '45, 212, 191';
 }
 
@@ -1784,20 +1831,20 @@ async function loadGraphData() {
   const container = document.getElementById('graph-canvas');
   const emptyEl = document.getElementById('graph-empty');
   const statusEl = document.getElementById('graph-status');
-  
+
   if (!container) return;
-  
+
   if (statusEl) statusEl.innerText = "Loading knowledge graph...";
-  
+
   try {
     const res = await fetch(API_BASE + '/documents/graph', {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    
+
     if (!res.ok) throw new Error("Failed to fetch graph data");
-    
+
     const data = await res.json();
-    
+
     if (!data.nodes || data.nodes.length === 0) {
       if (emptyEl) emptyEl.style.display = 'flex';
       container.style.display = 'none';
@@ -1805,20 +1852,20 @@ async function loadGraphData() {
       if (statusEl) statusEl.innerText = "No graph data found.";
       return;
     }
-    
+
     if (emptyEl) emptyEl.style.display = 'none';
     container.style.display = 'block';
-    
+
     // Create graphology graph instance
     const graph = new graphology.Graph();
-    
+
     // Pre-calculate degrees for node sizing
     const degrees = {};
     data.edges.forEach(edge => {
       degrees[edge.source] = (degrees[edge.source] || 0) + 1;
       degrees[edge.target] = (degrees[edge.target] || 0) + 1;
     });
-    
+
     // Add nodes to graphology
     data.nodes.forEach(node => {
       let color = '#2dd4bf'; // Teal default
@@ -1826,10 +1873,10 @@ async function loadGraphData() {
       else if (node.type === 'PERSON') color = '#a78bfa'; // Purple
       else if (node.type === 'EVENT') color = '#f43f5e'; // Rose
       else if (node.type === 'LOCATION') color = '#fb923c'; // Orange
-      
+
       const deg = degrees[node.id] || 0;
       const size = 6 + Math.sqrt(deg) * 4;
-      
+
       graph.addNode(node.id, {
         label: node.label,
         entityType: node.type,
@@ -1838,7 +1885,7 @@ async function loadGraphData() {
         color: color
       });
     });
-    
+
     // Add edges to graphology
     data.edges.forEach((edge, i) => {
       // Ensure endpoints exist in graphology
@@ -1851,20 +1898,20 @@ async function loadGraphData() {
         });
       }
     });
-    
+
     // Position nodes using force-directed layout
     applyForceLayout(graph);
-    
+
     // Setup Sigma.js rendering
     if (sigmaInstance) {
       sigmaInstance.kill();
       sigmaInstance = null;
     }
-    
+
     // Setup Hover and Highlighting State
     let hoveredNode = null;
     let hoveredNeighbors = new Set();
-    
+
     sigmaInstance = new Sigma(graph, container, {
       defaultNodeColor: "#2dd4bf",
       defaultEdgeColor: "rgba(255, 255, 255, 0.15)",
@@ -1899,30 +1946,30 @@ async function loadGraphData() {
         return res;
       }
     });
-    
+
     // Bind Event Listeners
     sigmaInstance.on("enterNode", ({ node }) => {
       hoveredNode = node;
       hoveredNeighbors = new Set(graph.neighbors(node));
       sigmaInstance.refresh();
     });
-    
+
     sigmaInstance.on("leaveNode", () => {
       hoveredNode = null;
       hoveredNeighbors.clear();
       sigmaInstance.refresh();
     });
-    
+
     function selectNode(nodeId) {
       const nodeData = data.nodes.find(n => n.id === nodeId);
       if (!nodeData) return;
-      
+
       const panel = document.getElementById('graph-details-panel');
       const titleEl = document.getElementById('graph-detail-title');
       const typeEl = document.getElementById('graph-detail-type');
       const descEl = document.getElementById('graph-detail-desc');
       const relationsList = document.getElementById('graph-detail-relations-list');
-      
+
       if (titleEl) titleEl.innerText = nodeData.label;
       if (typeEl) {
         typeEl.innerText = nodeData.type;
@@ -1931,13 +1978,13 @@ async function loadGraphData() {
         else if (nodeData.type === 'PERSON') color = '#a78bfa';
         else if (nodeData.type === 'EVENT') color = '#f43f5e';
         else if (nodeData.type === 'LOCATION') color = '#fb923c';
-        
+
         typeEl.style.background = `rgba(${hexToRgb(color)}, 0.15)`;
         typeEl.style.color = color;
         typeEl.style.borderColor = `rgba(${hexToRgb(color)}, 0.3)`;
       }
       if (descEl) descEl.innerText = nodeData.description || 'No description available.';
-      
+
       if (relationsList) {
         relationsList.innerHTML = '';
         const neighbors = graph.neighbors(nodeId);
@@ -1974,20 +2021,20 @@ async function loadGraphData() {
           });
         }
       }
-      
+
       if (panel) panel.style.display = 'flex';
     }
-    
+
     sigmaInstance.on("clickNode", ({ node }) => {
       selectNode(node);
     });
-    
+
     sigmaInstance.on("clickStage", () => {
       closeGraphDetails();
     });
-    
+
     if (statusEl) statusEl.innerText = `Graph loaded successfully (${data.nodes.length} nodes, ${data.edges.length} edges).`;
-    
+
   } catch (err) {
     console.error("Error rendering knowledge graph:", err);
     if (statusEl) statusEl.innerText = "Error loading knowledge graph.";
@@ -2019,10 +2066,10 @@ window.loadGraphData = loadGraphData;
 
 async function resetVectorDB() {
   if (!await showConfirm('Are you sure you want to reset the vector database? This will clear all existing document embeddings.', 'Reset Vector DB')) return;
-  
+
   const statusEl = document.getElementById('db-status');
   if (statusEl) statusEl.innerText = 'Resetting...';
-  
+
   try {
     const res = await fetch(API_BASE + '/settings/reset-vdb', {
       method: 'POST',

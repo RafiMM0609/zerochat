@@ -189,7 +189,7 @@ async def upload_document(
     # Insert text into LightRAG
     try:
         rag = await get_user_rag(user_id)
-        await rag.ainsert(parsed_text)
+        await rag.ainsert(parsed_text, ids=doc_id, file_paths=filename)
     except Exception as e:
         # Rollback metadata insert if LightRAG fails
         with db_session() as conn:

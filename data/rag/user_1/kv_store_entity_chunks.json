@@ -1,155 +1,164 @@
 {
-  "embedding dimension auto-detection": {
-    "chunk_ids": [
-      "doc-1030b6eb5bf9cdf7153a5ce7fa06e704-chunk-000"
-    ],
-    "count": 1,
-    "create_time": 1784248344,
-    "update_time": 1784248344,
-    "_id": "embedding dimension auto-detection"
-  },
   "PT Rafita": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000",
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
-    "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
+    "count": 2,
+    "update_time": 1784284479,
     "_id": "PT Rafita"
   },
-  "Q3 2026": {
+  "Product Launch and Bundling Strategy - Q3 2026": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Q3 2026"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Product Launch and Bundling Strategy - Q3 2026"
   },
-  "PT Rafita Product and Price Catalog": {
+  "Product and Price Catalog": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "PT Rafita Product and Price Catalog"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Product and Price Catalog"
   },
   "WFH Pro Kit": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
+    "create_time": 1784284385,
+    "update_time": 1784284385,
     "_id": "WFH Pro Kit"
   },
-  "Rafita Mechanical Keyboard (RAF-KBD-MECH)": {
+  "Rafita Mechanical Keyboard": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Mechanical Keyboard (RAF-KBD-MECH)"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Mechanical Keyboard"
   },
-  "Rafita Office Desk Mat (RAF-MAT-01)": {
+  "Rafita Office Desk Mat": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Office Desk Mat (RAF-MAT-01)"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Office Desk Mat"
   },
-  "Rafita Fast Charger 65W (RAF-CHG-65)": {
+  "Rafita Fast Charger 65W": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Fast Charger 65W (RAF-CHG-65)"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Fast Charger 65W"
   },
   "Urban Commuter": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
+    "create_time": 1784284385,
+    "update_time": 1784284385,
     "_id": "Urban Commuter"
   },
-  "Rafita Backpack Neo (RAF-BPK-NEO)": {
+  "Rafita Backpack Neo": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Backpack Neo (RAF-BPK-NEO)"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Backpack Neo"
   },
-  "Rafita Tumbler Swiss Edition (RAF-TMB-SW)": {
+  "Rafita Tumbler Swiss Edition": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Tumbler Swiss Edition (RAF-TMB-SW)"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Tumbler Swiss Edition"
   },
   "Audio-Active Set": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
+    "create_time": 1784284385,
+    "update_time": 1784284385,
     "_id": "Audio-Active Set"
   },
-  "Rafita Smartwatch V1 (RAF-SMW-01)": {
+  "Rafita Smartwatch V1": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Smartwatch V1 (RAF-SMW-01)"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Smartwatch V1"
   },
-  "Rafita Wireless Earbuds (RAF-TWS-01)": {
+  "Rafita Wireless Earbuds": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Wireless Earbuds (RAF-TWS-01)"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Wireless Earbuds"
   },
-  "Rafita Smart Home Hub (RAF-HUB-01)": {
+  "Exclusive VIP Campaign": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Smart Home Hub (RAF-HUB-01)"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Exclusive VIP Campaign"
   },
-  "Rafita Closer": {
+  "Rafita Smart Home Hub": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Rafita Closer"
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Smart Home Hub"
+  },
+  "Email Marketing": {
+    "chunk_ids": [
+      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000",
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 2,
+    "update_time": 1784284480,
+    "_id": "Email Marketing"
+  },
+  "Rafita Closer loyalty program": {
+    "chunk_ids": [
+      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284385,
+    "update_time": 1784284385,
+    "_id": "Rafita Closer loyalty program"
   },
   "Google Ads (Search)": {
     "chunk_ids": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
+    "create_time": 1784284385,
+    "update_time": 1784284385,
     "_id": "Google Ads (Search)"
   },
   "TikTok & Instagram Ads": {
@@ -157,8 +166,8 @@
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
+    "create_time": 1784284385,
+    "update_time": 1784284385,
     "_id": "TikTok & Instagram Ads"
   },
   "Makassar logistics hub": {
@@ -166,8 +175,8 @@
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
+    "create_time": 1784284385,
+    "update_time": 1784284385,
     "_id": "Makassar logistics hub"
   },
   "Eastern Indonesia": {
@@ -175,89 +184,215 @@
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
+    "create_time": 1784284385,
+    "update_time": 1784284385,
     "_id": "Eastern Indonesia"
   },
-  "Professionals, Tech Enthusiasts": {
+  "Marketing Team": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Professionals, Tech Enthusiasts"
+    "create_time": 1784284479,
+    "update_time": 1784284479,
+    "_id": "Marketing Team"
   },
-  "Students, Millennials": {
+  "Quarter 1 2026": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Students, Millennials"
+    "create_time": 1784284479,
+    "update_time": 1784284479,
+    "_id": "Quarter 1 2026"
   },
-  "Remote workers": {
+  "Brand Awareness": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Remote workers"
+    "create_time": 1784284479,
+    "update_time": 1784284479,
+    "_id": "Brand Awareness"
   },
-  "Students and daily commuters": {
+  "Digital Campaigns": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Students and daily commuters"
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Digital Campaigns"
   },
-  "Fitness enthusiasts": {
+  "Customer Loyalty Program": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Fitness enthusiasts"
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Customer Loyalty Program"
   },
-  "Email Marketing": {
+  "Organic Website Traffic": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Email Marketing"
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Organic Website Traffic"
   },
-  "Top 100 members": {
+  "Social Media Follower Growth": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Top 100 members"
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Social Media Follower Growth"
   },
-  "Average order value": {
+  "Instagram": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Average order value"
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Instagram"
   },
-  "Inventory": {
+  "TikTok": {
     "chunk_ids": [
-      "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
     ],
     "count": 1,
-    "create_time": 1784248982,
-    "update_time": 1784248982,
-    "_id": "Inventory"
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "TikTok"
+  },
+  "Cost Per Acquisition": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Cost Per Acquisition"
+  },
+  "Rafita Closer Campaign": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Rafita Closer Campaign"
+  },
+  "Social Media Ads": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Social Media Ads"
+  },
+  "Meta": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Meta"
+  },
+  "Google Ads": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Google Ads"
+  },
+  "Search Engine Marketing": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Search Engine Marketing"
+  },
+  "Bounce Rate": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Bounce Rate"
+  },
+  "A/B Testing": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "A/B Testing"
+  },
+  "Creative Asset": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Creative Asset"
+  },
+  "Quarter 2 2026": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Quarter 2 2026"
+  },
+  "Local Micro-Influencers": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Local Micro-Influencers"
+  },
+  "Leads": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Leads"
+  },
+  "Conversion Rate": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "Conversion Rate"
+  },
+  "ROI": {
+    "chunk_ids": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ],
+    "count": 1,
+    "create_time": 1784284480,
+    "update_time": 1784284480,
+    "_id": "ROI"
   }
 }

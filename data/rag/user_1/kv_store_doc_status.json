@@ -1,48 +1,22 @@
 {
-  "doc-1030b6eb5bf9cdf7153a5ce7fa06e704": {
-    "status": "processed",
-    "content_summary": "Testing embedding dimension auto-detection.",
-    "content_length": 43,
-    "created_at": "2026-07-17T00:32:21.857709+00:00",
-    "updated_at": "2026-07-17T00:32:24.921969+00:00",
-    "file_path": "unknown_source",
-    "track_id": "insert_20260717_073221_e8b4b320",
-    "content_hash": "1030b6eb5bf9cdf7153a5ce7fa06e704",
-    "metadata": {
-      "parse_start_time": 1784248341,
-      "parse_stage_skipped": true,
-      "parse_format": "raw",
-      "parse_engine": "legacy",
-      "analyzing_start_time": 1784248341,
-      "analyzing_stage_skipped": true,
-      "process_start_time": 1784248341,
-      "process_end_time": 1784248344,
-      "chunk_method": "legacy_chunking_func",
-      "chunk_opts": "size=1200, split_only=False, overlap=100"
-    },
-    "chunks_count": 1,
-    "chunks_list": [
-      "doc-1030b6eb5bf9cdf7153a5ce7fa06e704-chunk-000"
-    ]
-  },
   "doc-f2259393bbdc5e950df79a0ed459d818": {
     "status": "processed",
     "content_summary": "PT  Rafita  Product  Launch  and  Bundling  Strategy  -  Q3  2026  \nThis  document  outlines  the  strategic  bundling  and  promotional  plans  for  Q3  2026.  The  \nstrategies\n \nbelow\n \nare\n \ndesigned\n \nto\n \noptimize\n \nour\n \ncurrent\n \ninventory\n \nl...",
     "content_length": 2535,
-    "created_at": "2026-07-17T00:43:02.020400+00:00",
-    "updated_at": "2026-07-17T00:43:02.130976+00:00",
-    "file_path": "unknown_source",
-    "track_id": "insert_20260717_074302_72d260ea",
+    "created_at": "2026-07-17T10:31:46.240580+00:00",
+    "updated_at": "2026-07-17T10:33:05.836436+00:00",
+    "file_path": "PT Rafita Product Launch and Bundling Strategy - Q3 2026.pdf",
+    "track_id": "insert_20260717_173146_46594a5f",
     "content_hash": "f2259393bbdc5e950df79a0ed459d818",
     "metadata": {
-      "parse_start_time": 1784248982,
+      "parse_start_time": 1784284306,
       "parse_stage_skipped": true,
       "parse_format": "raw",
       "parse_engine": "legacy",
-      "analyzing_start_time": 1784248982,
+      "analyzing_start_time": 1784284306,
       "analyzing_stage_skipped": true,
-      "process_start_time": 1784248982,
-      "process_end_time": 1784248982,
+      "process_start_time": 1784284306,
+      "process_end_time": 1784284385,
       "chunk_method": "legacy_chunking_func",
       "chunk_opts": "size=1200, split_only=False, overlap=100"
     },
@@ -50,5 +24,67 @@
     "chunks_list": [
       "doc-f2259393bbdc5e950df79a0ed459d818-chunk-000"
     ]
+  },
+  "doc-204c4010c5e21e4bedd9611af5fc5e77": {
+    "status": "processed",
+    "content_summary": "PT  Rafita  Marketing  Team  Performance  \nReport\n \nPeriod:  Quarter  1  (Q1)  2026  Prepared  By:  PT  Rafita  Internal  Marketing  Team   \n1.  Executive  Summary  \nThis  report  summarizes  the  performance  of  the  PT  Rafita  marketing  team  du...",
+    "content_length": 2592,
+    "created_at": "2026-07-17T10:31:49.271794+00:00",
+    "updated_at": "2026-07-17T10:34:40.039609+00:00",
+    "file_path": "Laporan Kinerja Tim Marketing PT Rafita - Q1 2026.pdf",
+    "track_id": "insert_20260717_173149_ac3ee129",
+    "content_hash": "204c4010c5e21e4bedd9611af5fc5e77",
+    "metadata": {
+      "parse_start_time": 1784284388,
+      "parse_stage_skipped": true,
+      "parse_format": "raw",
+      "parse_engine": "legacy",
+      "analyzing_start_time": 1784284388,
+      "analyzing_stage_skipped": true,
+      "process_start_time": 1784284388,
+      "process_end_time": 1784284480,
+      "chunk_method": "legacy_chunking_func",
+      "chunk_opts": "size=1200, split_only=False, overlap=100"
+    },
+    "chunks_count": 1,
+    "chunks_list": [
+      "doc-204c4010c5e21e4bedd9611af5fc5e77-chunk-000"
+    ]
+  },
+  "dup-7bfd8e08405a89e6638cd0176a6dd631": {
+    "status": "failed",
+    "content_summary": "[DUPLICATE:filename] Original document: doc-f2259393bbdc5e950df79a0ed459d818",
+    "content_length": 2535,
+    "chunks_count": 0,
+    "chunks_list": [],
+    "created_at": "2026-07-17T10:32:59.321720+00:00",
+    "updated_at": "2026-07-17T10:32:59.321729+00:00",
+    "file_path": "PT Rafita Product Launch and Bundling Strategy - Q3 2026.pdf",
+    "track_id": "insert_20260717_173259_86682747",
+    "error_msg": "File name already exists. Original doc_id: doc-f2259393bbdc5e950df79a0ed459d818, Status: DocStatus.PROCESSING",
+    "metadata": {
+      "is_duplicate": true,
+      "duplicate_kind": "filename",
+      "original_doc_id": "doc-f2259393bbdc5e950df79a0ed459d818",
+      "original_track_id": "insert_20260717_173146_46594a5f"
+    }
+  },
+  "dup-6fcbef845ab7cb43661118fa092a8f84": {
+    "status": "failed",
+    "content_summary": "[DUPLICATE:filename] Original document: doc-204c4010c5e21e4bedd9611af5fc5e77",
+    "content_length": 2592,
+    "chunks_count": 0,
+    "chunks_list": [],
+    "created_at": "2026-07-17T10:33:25.800320+00:00",
+    "updated_at": "2026-07-17T10:33:25.800332+00:00",
+    "file_path": "Laporan Kinerja Tim Marketing PT Rafita - Q1 2026.pdf",
+    "track_id": "insert_20260717_173325_e55ef636",
+    "error_msg": "File name already exists. Original doc_id: doc-204c4010c5e21e4bedd9611af5fc5e77, Status: DocStatus.PROCESSING",
+    "metadata": {
+      "is_duplicate": true,
+      "duplicate_kind": "filename",
+      "original_doc_id": "doc-204c4010c5e21e4bedd9611af5fc5e77",
+      "original_track_id": "insert_20260717_173149_ac3ee129"
+    }
   }
 }
