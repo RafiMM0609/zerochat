@@ -968,7 +968,7 @@ function copyToClipboard(text, buttonElement) {
   navigator.clipboard.writeText(text).then(() => {
     showNotification('Copied to clipboard!', 'success', 2000);
     const originalText = buttonElement.innerText;
-    buttonElement.innerText = '✅';
+    buttonElement.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
     buttonElement.style.color = '#10b981';
     buttonElement.style.borderColor = 'rgba(16, 185, 129, 0.3)';
     setTimeout(() => {
@@ -1124,8 +1124,8 @@ async function loadApiKeys() {
     li.innerHTML = `
       <code>${escapeHtml(k.key)}</code>
       <div class="api-key-actions">
-        <button class="copy-key-btn" title="Copy API Key" aria-label="Copy API Key">📋</button>
-        <button class="delete-key-btn" title="Delete API Key" aria-label="Delete API Key">🗑️</button>
+        <button class="copy-key-btn" title="Copy API Key" aria-label="Copy API Key"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></button>
+        <button class="delete-key-btn" title="Delete API Key" aria-label="Delete API Key"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg></button>
       </div>
     `;
 
@@ -1191,7 +1191,7 @@ async function loadDocuments() {
         </div>
       </div>
       <button class="delete-doc-btn" title="Delete Document" aria-label="Delete Document">
-        DEL
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
       </button>
     `;
 
@@ -1526,12 +1526,12 @@ async function loadSecurityRules() {
       let actionButtons = '';
       if (rule.status === 'pending') {
         actionButtons = `
-          <button class="rule-action-btn approve-btn" onclick="approveRule(${rule.id})" title="Approve Rule">OK</button>
-          <button class="rule-action-btn reject-btn" onclick="rejectRule(${rule.id})" title="Reject Rule">NO</button>
+          <button class="rule-action-btn approve-btn" onclick="approveRule(${rule.id})" title="Approve Rule"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></button>
+          <button class="rule-action-btn reject-btn" onclick="rejectRule(${rule.id})" title="Reject Rule"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
         `;
       } else {
         actionButtons = `
-          <button class="rule-action-btn delete-btn" onclick="deleteRule(${rule.id})" title="Delete Rule">DEL</button>
+          <button class="rule-action-btn delete-btn" onclick="deleteRule(${rule.id})" title="Delete Rule"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#f87171" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
         `;
       }
 

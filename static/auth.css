@@ -39,14 +39,14 @@
   font-size: 13px;
   font-weight: 800;
   letter-spacing: 0.14em;
-  color: #2dd4bf;
+  color: #14b8a6;
   margin-bottom: 48px;
 }
 
 .auth-welcome {
   font-size: 32px;
   font-weight: 800;
-  color: #f1f5f9;
+  color: #f8fafc;
   letter-spacing: -0.03em;
   margin: 0 0 8px;
   line-height: 1.2;
@@ -54,7 +54,7 @@
 
 .auth-subtitle {
   font-size: 15px;
-  color: #64748b;
+  color: #cbd5e1;
   margin: 0 0 36px;
   line-height: 1.5;
 }
@@ -68,7 +68,7 @@
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #94a3b8;
+  color: #e2e8f0;
   margin-bottom: 6px;
 }
 
@@ -79,10 +79,10 @@
 .auth-field input {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   font-size: 14px;
-  color: #e2e8f0;
+  color: #f8fafc;
   background: #0f172a;
   outline: none;
   transition: all 0.2s;
@@ -91,12 +91,12 @@
 }
 
 .auth-field input::placeholder {
-  color: #475569;
+  color: #64748b;
 }
 
 .auth-field input:focus {
-  border-color: #2dd4bf;
-  box-shadow: 0 0 0 3px rgba(45, 212, 191, 0.12);
+  border-color: #14b8a6;
+  box-shadow: none;
 }
 
 /* --- Primary Button --- */
@@ -105,10 +105,10 @@
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: #2dd4bf;
-  color: #0f172a;
+  background: #0d9488;
+  color: #ffffff;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
   font-family: inherit;
@@ -116,9 +116,9 @@
 }
 
 .auth-btn-primary:hover {
-  background: #5eead4;
+  background: #14b8a6;
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(45, 212, 191, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
 }
 
 .auth-btn-primary:active {
@@ -131,7 +131,7 @@
   align-items: center;
   gap: 16px;
   margin: 24px 0;
-  color: #475569;
+  color: #64748b;
   font-size: 13px;
 }
 
@@ -140,17 +140,17 @@
   content: '';
   flex: 1;
   height: 1px;
-  background: #1e293b;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 /* --- Guest Button --- */
 .auth-btn-google {
   width: 100%;
   padding: 11px;
-  border: 1px solid #1e293b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   background: #0f172a;
-  color: #94a3b8;
+  color: #cbd5e1;
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -164,8 +164,8 @@
 
 .auth-btn-google:hover {
   background: #1a2332;
-  border-color: #334155;
-  color: #e2e8f0;
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
 }
 
 /* --- Toggle Auth Mode --- */
@@ -173,21 +173,21 @@
   text-align: center;
   margin-top: 28px;
   font-size: 14px;
-  color: #64748b;
+  color: #cbd5e1;
   cursor: pointer;
   transition: color 0.2s;
 }
 
 .toggle-auth:hover {
-  color: #94a3b8;
+  color: #f8fafc;
 }
 
 .toggle-auth strong {
-  color: #2dd4bf;
+  color: #14b8a6;
 }
 
 .toggle-auth:hover strong {
-  color: #5eead4;
+  color: #2dd4bf;
 }
 
 /* ==========================================================================
