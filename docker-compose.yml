@@ -1,0 +1,12 @@
+services:
+  lightrag-chat:
+    build: .
+    container_name: lightrag-chat
+    restart: unless-stopped
+    ports:
+      - "3200:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./data:/app/data
+      - ./database.sqlite:/app/database.sqlite
