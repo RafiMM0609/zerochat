@@ -15,8 +15,12 @@ RUN uv sync --frozen --no-dev
 COPY app /app/app
 COPY static /app/static
 
+# Environment paths
+ENV PATH="/app/.venv/bin:$PATH"
+ENV PORT=3000
+
 # Expose internal port
 EXPOSE 3000
 
-# Start server using Uvicorn
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3000", "--workers", "2"]
+# Start server using Uvicorn directly
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "3000"]

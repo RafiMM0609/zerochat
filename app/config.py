@@ -23,8 +23,16 @@ except ValueError:
 
 
 # Storage paths
-DATABASE_PATH = BASE_DIR / "database.sqlite"
+db_path_env = os.getenv("DATABASE_PATH")
+if db_path_env:
+    DATABASE_PATH = Path(db_path_env)
+elif (BASE_DIR / "database.sqlite").is_file():
+    DATABASE_PATH = BASE_DIR / "database.sqlite"
+else:
+    DATABASE_PATH = BASE_DIR / "data" / "database.sqlite"
+
 RAG_DIR = BASE_DIR / "data" / "rag"
 
 # Create directories if they don't exist
+DATABASE_PATH.parent.mkdir(parents=True, exist_ok=True)
 RAG_DIR.mkdir(parents=True, exist_ok=True)
