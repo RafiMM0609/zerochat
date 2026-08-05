@@ -20,6 +20,30 @@ MODELS = [
 
 model_cooldowns = {}  # model_id -> timestamp (when cooldown ends)
 
+async def fetch_fallback_free_models():
+    """Fetch top 3 free models dynamically from OpenRouter API and override global MODELS list."""
+    global MODELS
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.get("https://openrouter.ai/api/v1/models", timeout=10.0)
+            if res.status_code == 200:
+                data = res.json()
+                models_data = data.get("data", [])
+                free_models = []
+                for m in models_data:
+                    m_id = m.get("id", "")
+                    if m_id.endswith(":free") or ":free" in m_id:
+                        free_models.append(m_id)
+                        if len(free_models) == 3:
+                            break
+                if free_models:
+                    print(f"[ModelSelector] Overriding MODELS list with new free models from OpenRouter: {free_models}")
+                    MODELS = [{"id": model_id, "priority": idx + 1} for idx, model_id in enumerate(free_models)]
+                    return free_models
+    except Exception as e:
+        print(f"[ModelSelector] Failed to fetch free models from OpenRouter: {e}")
+    return [m["id"] for m in MODELS]
+
 def get_available_models():
     now = time.time()
     available = []
@@ -150,7 +174,8 @@ async def custom_llm_complete(prompt: str, system_prompt: str = None, history: l
             import json
             available_models = get_available_models()
             if not available_models:
-                available_models = [m["id"] for m in MODELS]
+                print("[ModelSelector] No standard models available, fetching free models dynamically from OpenRouter...")
+                available_models = await fetch_fallback_free_models()
 
             last_err = None
             for model_id in available_models:
@@ -196,7 +221,8 @@ async def custom_llm_complete(prompt: str, system_prompt: str = None, history: l
 
     available_models = get_available_models()
     if not available_models:
-        available_models = [m["id"] for m in MODELS]
+        print("[ModelSelector] No standard models available, fetching free models dynamically from OpenRouter...")
+        available_models = await fetch_fallback_free_models()
 
     last_err = None
     for model_id in available_models:
