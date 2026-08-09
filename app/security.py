@@ -14,28 +14,68 @@ PROMPT_INJECTION_PATTERNS = [
     {
         'id': 'instruction_override',
         'name': 'Instruction Override',
-        'regex': re.compile(r'\bignore\s+(all\s+)?(previous|prior|above)\s+instructions\b', re.IGNORECASE),
+        'regex': re.compile(
+            r'\b(?:ignore|disregard|forget|override|cancel|bypass|stop\s+following)\s+'
+            r'(?:all\s+)?(?:the\s+)?(?:previous|prior|above|former|earlier|initial|system)'
+            r'(?:\s+(?:instructions|rules|prompts|directives|context))?\b',
+            re.IGNORECASE
+        ),
         'severity': 'HIGH',
         'description': 'Attempts to override or bypass system instructions.'
     },
     {
         'id': 'system_leak',
         'name': 'System Prompt Leakage',
-        'regex': re.compile(r'\b(?:reveal|output|print|show|leak|copy)\s+(your\s+)?(?:system\s+prompt|instructions|initialization|system\s+instructions)\b', re.IGNORECASE),
+        'regex': re.compile(
+            r'\b(?:(?:reveal|output|print|show|leak|copy|tell|share|give|display|repeat|state)\b.*?'
+            r'\b(?:your|system|initial|original|base|starting|first|meta|hidden)\s+.*?'
+            r'(?:instructions|prompt|directives|rules|system\s+prompt|initialization)|'
+            r'what\s+(?:are|were|was)\s+(?:your|the)\s+.*?'
+            r'(?:initial|system|original|base|starting|first|meta|hidden)\s+.*?'
+            r'(?:instructions|prompt|directives|rules))\b',
+            re.IGNORECASE
+        ),
         'severity': 'HIGH',
         'description': 'Attempts to extract the system instructions of the AI.'
     },
     {
+        'id': 'simulated_response',
+        'name': 'Simulated Response Injection',
+        'regex': re.compile(
+            r'(?:\b(?:response|assistant|system|output|ai):\s*.*?'
+            r'(?:ignore|forget|disregard|tell\s+me|reveal|instead|instructions))\b',
+            re.IGNORECASE
+        ),
+        'severity': 'CRITICAL',
+        'description': 'Attempts to inject fake dialogue turns or assistant outputs.'
+    },
+    {
+        'id': 'tag_breakout',
+        'name': 'Structural Tag Breakout',
+        'regex': re.compile(
+            r'</?(?:user_input|system_instructions|dokumen|document|system_prompt|system)>\b',
+            re.IGNORECASE
+        ),
+        'severity': 'HIGH',
+        'description': 'Attempts to inject or close structural system prompt tags.'
+    },
+    {
         'id': 'jailbreak_dan',
         'name': 'DAN / Jailbreak Mode',
-        'regex': re.compile(r'\b(?:dan\s+mode|do\s*anything\s*now|developer\s+mode\s+active|bypass\s+security\s+filters|jailbreak)\b', re.IGNORECASE),
+        'regex': re.compile(
+            r'\b(?:dan\s+mode|do\s*anything\s*now|developer\s+mode\s+active|bypass\s+security\s+filters|jailbreak)\b',
+            re.IGNORECASE
+        ),
         'severity': 'CRITICAL',
         'description': 'Attempts to force the AI into an unrestricted developer bypass state.'
     },
     {
         'id': 'roleplay_bypass',
         'name': 'Roleplay Bypass',
-        'regex': re.compile(r'\b(?:hypothetical\s+scenario\s+where|roleplay\s+as\s+(an?\s+)?unfiltered|pretend\s+you\s+have\s+no\s+restrictions)\b', re.IGNORECASE),
+        'regex': re.compile(
+            r'\b(?:hypothetical\s+scenario\s+where|roleplay\s+as\s+(an?\s+)?unfiltered|pretend\s+you\s+have\s+no\s+restrictions)\b',
+            re.IGNORECASE
+        ),
         'severity': 'MEDIUM',
         'description': 'Attempts to bypass restrictions using hypothetical roleplay contexts.'
     }
@@ -165,8 +205,9 @@ async def verify_and_harden(request_info, message_text):
         }
 
     # 3. Heuristics Prompt Injection Check (Static Patterns)
+    normalized_text = re.sub(r'\s+', ' ', message_text)
     for pattern in PROMPT_INJECTION_PATTERNS:
-        if pattern['regex'].search(message_text):
+        if pattern['regex'].search(message_text) or pattern['regex'].search(normalized_text):
             details = f"Pattern \"{pattern['name']}\" matched: \"{message_text[:120]}...\""
             log_security_event(user_id, ip_address, 'PROMPT_INJECTION', details, pattern['severity'])
             await save_blocked_attack(user_id, message_text, 'static_regex')
