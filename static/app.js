@@ -1,6 +1,23 @@
 const { animate } = Motion;
 const API_BASE = '/api';
 
+// Dynamic SEO Canonical & Language Handler for Google Search Console compliance
+(function initSeoCanonical() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const langParam = urlParams.get('lang');
+  const canonicalEl = document.getElementById('canonical-url');
+  
+  if (langParam === 'en') {
+    document.documentElement.lang = 'en';
+  } else {
+    document.documentElement.lang = 'id';
+  }
+  if (canonicalEl) {
+    // Ensures clean self-canonical pointing to root domain for indexed parameter pages
+    canonicalEl.setAttribute('href', 'https://www.zeroman.my.id/');
+  }
+})();
+
 let token = localStorage.getItem('agnostic_token');
 let isLoginMode = true;
 let selectedFile = null;
