@@ -76,60 +76,82 @@ def get_model_status():
         })
     return status
 
-async def embed_text(text: str) -> list[float]:
-    if EMBEDDING_PROVIDER == "gemini":
-        api_key = EMBEDDING_API_KEY or GEMINI_API_KEY
-        if not api_key:
-            raise ValueError("EMBEDDING_API_KEY or GEMINI_API_KEY is not configured in .env")
-        
-        # Ensure model has models/ prefix
-        model = EMBEDDING_MODEL if EMBEDDING_MODEL.startswith("models/") else f"models/{EMBEDDING_MODEL}"
-        if not EMBEDDING_MODEL or EMBEDDING_MODEL == "nvidia/llama-nemotron-embed-vl-1b-v2:free":
-            model = "models/text-embedding-004"
-            
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                f"https://generativelanguage.googleapis.com/v1beta/{model}:embedContent?key={api_key}",
-                json={
-                    "model": model,
-                    "content": {
-                        "parts": [{"text": text}]
-                    }
-                },
-                headers={"Content-Type": "application/json"},
-                timeout=30.0
-            )
-        if response.status_code != 200:
-            raise Exception(f"Gemini embedding API error: {response.text}")
-        data = response.json()
-        return data["embedding"]["values"]
+# Global semaphore to limit concurrent embedding requests (e.g., 2 parallel requests max)
+embedding_semaphore = asyncio.Semaphore(2)
 
-    else:  # Default openrouter
-        api_key = EMBEDDING_API_KEY or OPENROUTER_API_KEY
-        if not api_key:
-            raise ValueError("EMBEDDING_API_KEY or OPENROUTER_API_KEY is not configured in .env")
-            
-        model = EMBEDDING_MODEL
-        if not model or model.startswith("models/"):
-            model = "nvidia/llama-nemotron-embed-vl-1b-v2:free"
-            
-        async with httpx.AsyncClient() as client:
-            response = await client.post(
-                "https://openrouter.ai/api/v1/embeddings",
-                headers={
-                    "Authorization": f"Bearer {api_key}",
-                    "Content-Type": "application/json"
-                },
-                json={
-                    "model": model,
-                    "input": text
-                },
-                timeout=30.0
-            )
-        if response.status_code != 200:
-            raise Exception(f"OpenRouter embedding API error: {response.text}")
-        data = response.json()
-        return data["data"][0]["embedding"]
+async def embed_text(text: str) -> list[float]:
+    max_retries = 5
+    for attempt in range(1, max_retries + 1):
+        try:
+            if EMBEDDING_PROVIDER == "gemini":
+                api_key = EMBEDDING_API_KEY or GEMINI_API_KEY
+                if not api_key:
+                    raise ValueError("EMBEDDING_API_KEY or GEMINI_API_KEY is not configured in .env")
+                
+                # Ensure model has models/ prefix
+                model = EMBEDDING_MODEL if EMBEDDING_MODEL.startswith("models/") else f"models/{EMBEDDING_MODEL}"
+                if not EMBEDDING_MODEL or EMBEDDING_MODEL == "nvidia/llama-nemotron-embed-vl-1b-v2:free":
+                    model = "models/text-embedding-004"
+                    
+                async with embedding_semaphore:
+                    async with httpx.AsyncClient() as client:
+                        response = await client.post(
+                            f"https://generativelanguage.googleapis.com/v1beta/{model}:embedContent?key={api_key}",
+                            json={
+                                "model": model,
+                                "content": {
+                                    "parts": [{"text": text}]
+                                }
+                            },
+                            headers={"Content-Type": "application/json"},
+                            timeout=30.0
+                        )
+                if response.status_code == 429:
+                    raise Exception(f"Rate limited (429): {response.text}")
+                elif response.status_code != 200:
+                    raise Exception(f"Gemini embedding API error ({response.status_code}): {response.text}")
+                data = response.json()
+                return data["embedding"]["values"]
+
+            else:  # Default openrouter
+                api_key = EMBEDDING_API_KEY or OPENROUTER_API_KEY
+                if not api_key:
+                    raise ValueError("EMBEDDING_API_KEY or OPENROUTER_API_KEY is not configured in .env")
+                    
+                model = EMBEDDING_MODEL
+                if not model or model.startswith("models/"):
+                    model = "nvidia/llama-nemotron-embed-vl-1b-v2:free"
+                    
+                async with embedding_semaphore:
+                    async with httpx.AsyncClient() as client:
+                        response = await client.post(
+                            "https://openrouter.ai/api/v1/embeddings",
+                            headers={
+                                "Authorization": f"Bearer {api_key}",
+                                "Content-Type": "application/json"
+                            },
+                            json={
+                                "model": model,
+                                "input": text
+                            },
+                            timeout=30.0
+                        )
+                if response.status_code == 429:
+                    raise Exception(f"Rate limited (429): {response.text}")
+                elif response.status_code != 200:
+                    raise Exception(f"OpenRouter embedding API error ({response.status_code}): {response.text}")
+                data = response.json()
+                if "data" not in data or not data["data"]:
+                    raise Exception(f"OpenRouter embedding empty response: {response.text}")
+                return data["data"][0]["embedding"]
+
+        except Exception as e:
+            if attempt == max_retries:
+                print(f"[Embedding] All {max_retries} attempts failed for embedding: {e}")
+                raise e
+            backoff = (2 ** attempt) + (0.2 * attempt)
+            print(f"[Embedding] Attempt {attempt}/{max_retries} failed ({e}). Retrying in {backoff:.1f}s...")
+            await asyncio.sleep(backoff)
 
 def get_embedding_dimension() -> int:
     if EMBEDDING_DIM and EMBEDDING_DIM > 0:
