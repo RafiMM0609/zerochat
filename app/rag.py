@@ -14,15 +14,18 @@ import contextvars
 current_user_persona = contextvars.ContextVar("current_user_persona", default="You are a helpful AI assistant.")
 
 MODELS = [
-    {"id": "poolside/laguna-xs-2.1:free", "priority": 1},
-    {"id": "nvidia/nemotron-3-ultra-550b-a55b:free", "priority": 2},
-    {"id": "openrouter/free", "priority": 3}
+    {"id": "inclusionai/ling-3.0-flash-fin:free", "priority": 1},
+    {"id": "liquid/lfm-2.5-2.6b:free", "priority": 2},
+    {"id": "nvidia/nemotron-3.5-lightning:free", "priority": 3},
+    {"id": "poolside/laguna-s-2.1:free", "priority": 4},
+    {"id": "z-ai/glm-5.2:free", "priority": 5},
+    {"id": "minimax/minimax-m3:free", "priority": 6}
 ]
 
 model_cooldowns = {}  # model_id -> timestamp (when cooldown ends)
 
 async def fetch_fallback_free_models():
-    """Fetch top 3 free models dynamically from OpenRouter API and override global MODELS list."""
+    """Fetch top 5 free models dynamically from OpenRouter API, clear their cooldowns, and override global MODELS list."""
     global MODELS
     try:
         async with httpx.AsyncClient() as client:
@@ -35,11 +38,13 @@ async def fetch_fallback_free_models():
                     m_id = m.get("id", "")
                     if m_id.endswith(":free") or ":free" in m_id:
                         free_models.append(m_id)
-                        if len(free_models) == 3:
+                        if len(free_models) == 5:
                             break
                 if free_models:
                     print(f"[ModelSelector] Overriding MODELS list with new free models from OpenRouter: {free_models}")
                     MODELS = [{"id": model_id, "priority": idx + 1} for idx, model_id in enumerate(free_models)]
+                    for m_id in free_models:
+                        model_cooldowns.pop(m_id, None)
                     return free_models
     except Exception as e:
         print(f"[ModelSelector] Failed to fetch free models from OpenRouter: {e}")
@@ -76,8 +81,9 @@ def get_model_status():
         })
     return status
 
-# Global semaphore to limit concurrent embedding requests (e.g., 2 parallel requests max)
+# Global semaphores to limit concurrent requests (prevent 429 rate limit spikes)
 embedding_semaphore = asyncio.Semaphore(2)
+llm_semaphore = asyncio.Semaphore(2)
 
 async def embed_text(text: str) -> list[float]:
     max_retries = 5
@@ -195,17 +201,123 @@ async def custom_llm_complete(prompt: str, system_prompt: str = None, history: l
     if stream:
         async def stream_generator():
             import json
+            import random
             available_models = get_available_models()
             if not available_models:
                 print("[ModelSelector] No standard models available, fetching free models dynamically from OpenRouter...")
                 available_models = await fetch_fallback_free_models()
 
-            last_err = None
-            for model_id in available_models:
+            async with llm_semaphore:
+                last_err = None
+                for model_id in available_models:
+                    max_retries = 3
+                    for attempt in range(1, max_retries + 1):
+                        try:
+                            async with httpx.AsyncClient() as client:
+                                async with client.stream(
+                                    "POST",
+                                    "https://openrouter.ai/api/v1/chat/completions",
+                                    headers={
+                                        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                                        "Content-Type": "application/json",
+                                        "HTTP-Referer": "https://chatbot.kagita.my.id",
+                                        "X-Title": "Agnostic-AI"
+                                    },
+                                    json={
+                                        "model": model_id,
+                                        "messages": messages,
+                                        "temperature": kwargs.get("temperature", 0.7),
+                                        "stream": True
+                                    },
+                                    timeout=60.0
+                                ) as response:
+                                    if response.status_code == 429 or "429" in str(response.status_code):
+                                        raise Exception(f"Status 429: Rate limited upstream")
+                                    elif response.status_code != 200:
+                                        raise Exception(f"Status {response.status_code}")
+                                    
+                                    async for line in response.aiter_lines():
+                                        if line.startswith("data: ") and line.strip() != "data: [DONE]":
+                                            try:
+                                                data = json.loads(line[6:])
+                                                chunk = data["choices"][0]["delta"].get("content", "")
+                                                if chunk:
+                                                    yield chunk
+                                            except Exception:
+                                                pass
+                            report_model_success(model_id)
+                            return
+                        except Exception as e:
+                            last_err = e
+                            err_str = str(e)
+                            if "429" in err_str or "rate" in err_str.lower():
+                                if attempt < max_retries:
+                                    backoff = (2 ** attempt) + random.uniform(0.5, 1.5)
+                                    print(f"[ModelSelector] Model {model_id} hit 429 (attempt {attempt}/{max_retries}). Retrying in {backoff:.1f}s...")
+                                    await asyncio.sleep(backoff)
+                                    continue
+                            print(f"[ModelSelector] Stream failed for model {model_id}: {e}")
+                            report_model_failure(model_id)
+                            break
+
+                # Emergency dynamic fallback if all available models failed
+                print("[ModelSelector] All available models failed, fetching emergency fallback models from OpenRouter...")
+                fallback_models = await fetch_fallback_free_models()
+                for model_id in fallback_models:
+                    try:
+                        async with httpx.AsyncClient() as client:
+                            async with client.stream(
+                                "POST",
+                                "https://openrouter.ai/api/v1/chat/completions",
+                                headers={
+                                    "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                                    "Content-Type": "application/json",
+                                    "HTTP-Referer": "https://chatbot.kagita.my.id",
+                                    "X-Title": "Agnostic-AI"
+                                },
+                                json={
+                                    "model": model_id,
+                                    "messages": messages,
+                                    "temperature": kwargs.get("temperature", 0.7),
+                                    "stream": True
+                                },
+                                timeout=60.0
+                            ) as response:
+                                if response.status_code != 200:
+                                    raise Exception(f"Status {response.status_code}")
+                                async for line in response.aiter_lines():
+                                    if line.startswith("data: ") and line.strip() != "data: [DONE]":
+                                        try:
+                                            data = json.loads(line[6:])
+                                            chunk = data["choices"][0]["delta"].get("content", "")
+                                            if chunk:
+                                                yield chunk
+                                        except Exception:
+                                            pass
+                        report_model_success(model_id)
+                        return
+                    except Exception as e:
+                        print(f"[ModelSelector] Emergency stream model {model_id} failed: {e}")
+                        report_model_failure(model_id)
+                        last_err = e
+
+                raise last_err or Exception("All streaming models failed")
+        return stream_generator()
+
+    import random
+    available_models = get_available_models()
+    if not available_models:
+        print("[ModelSelector] No standard models available, fetching free models dynamically from OpenRouter...")
+        available_models = await fetch_fallback_free_models()
+
+    async with llm_semaphore:
+        last_err = None
+        for model_id in available_models:
+            max_retries = 3
+            for attempt in range(1, max_retries + 1):
                 try:
                     async with httpx.AsyncClient() as client:
-                        async with client.stream(
-                            "POST",
+                        response = await client.post(
                             "https://openrouter.ai/api/v1/chat/completions",
                             headers={
                                 "Authorization": f"Bearer {OPENROUTER_API_KEY}",
@@ -217,69 +329,67 @@ async def custom_llm_complete(prompt: str, system_prompt: str = None, history: l
                                 "model": model_id,
                                 "messages": messages,
                                 "temperature": kwargs.get("temperature", 0.7),
-                                "stream": True
+                                "stream": False
                             },
                             timeout=60.0
-                        ) as response:
-                            if response.status_code != 200:
-                                raise Exception(f"Status {response.status_code}")
-                            
-                            async for line in response.aiter_lines():
-                                if line.startswith("data: ") and line.strip() != "data: [DONE]":
-                                    try:
-                                        data = json.loads(line[6:])
-                                        chunk = data["choices"][0]["delta"].get("content", "")
-                                        if chunk:
-                                            yield chunk
-                                    except Exception:
-                                        pass
+                        )
+                    if response.status_code == 429 or "429" in str(response.status_code):
+                        raise Exception(f"Status 429: {response.text}")
+                    elif response.status_code != 200:
+                        raise Exception(f"Status {response.status_code}: {response.text}")
+                    
+                    data = response.json()
+                    result = data["choices"][0]["message"]["content"]
                     report_model_success(model_id)
-                    return
+                    return result
                 except Exception as e:
-                    print(f"[ModelSelector] Stream failed for model {model_id}: {e}")
-                    report_model_failure(model_id)
                     last_err = e
-            raise last_err or Exception("All streaming models failed")
-        return stream_generator()
+                    err_str = str(e)
+                    if "429" in err_str or "rate" in err_str.lower():
+                        if attempt < max_retries:
+                            backoff = (2 ** attempt) + random.uniform(0.5, 1.5)
+                            print(f"[ModelSelector] Model {model_id} hit 429 (attempt {attempt}/{max_retries}). Retrying in {backoff:.1f}s...")
+                            await asyncio.sleep(backoff)
+                            continue
+                    print(f"[ModelSelector] Model {model_id} failed: {e}")
+                    report_model_failure(model_id)
+                    break
 
-    available_models = get_available_models()
-    if not available_models:
-        print("[ModelSelector] No standard models available, fetching free models dynamically from OpenRouter...")
-        available_models = await fetch_fallback_free_models()
+        # Emergency dynamic fallback if all standard models failed
+        print("[ModelSelector] All available models failed, fetching emergency fallback models from OpenRouter...")
+        fallback_models = await fetch_fallback_free_models()
+        for model_id in fallback_models:
+            try:
+                async with httpx.AsyncClient() as client:
+                    response = await client.post(
+                        "https://openrouter.ai/api/v1/chat/completions",
+                        headers={
+                            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+                            "Content-Type": "application/json",
+                            "HTTP-Referer": "https://chatbot.kagita.my.id",
+                            "X-Title": "Agnostic-AI"
+                        },
+                        json={
+                            "model": model_id,
+                            "messages": messages,
+                            "temperature": kwargs.get("temperature", 0.7),
+                            "stream": False
+                        },
+                        timeout=60.0
+                    )
+                if response.status_code != 200:
+                    raise Exception(f"Status {response.status_code}: {response.text}")
+                
+                data = response.json()
+                result = data["choices"][0]["message"]["content"]
+                report_model_success(model_id)
+                return result
+            except Exception as e:
+                print(f"[ModelSelector] Emergency model {model_id} failed: {e}")
+                report_model_failure(model_id)
+                last_err = e
 
-    last_err = None
-    for model_id in available_models:
-        try:
-            async with httpx.AsyncClient() as client:
-                response = await client.post(
-                    "https://openrouter.ai/api/v1/chat/completions",
-                    headers={
-                        "Authorization": f"Bearer {OPENROUTER_API_KEY}",
-                        "Content-Type": "application/json",
-                        "HTTP-Referer": "https://chatbot.kagita.my.id",
-                        "X-Title": "Agnostic-AI"
-                    },
-                    json={
-                        "model": model_id,
-                        "messages": messages,
-                        "temperature": kwargs.get("temperature", 0.7),
-                        "stream": False
-                    },
-                    timeout=60.0
-                )
-            if response.status_code != 200:
-                raise Exception(f"Status {response.status_code}: {response.text}")
-            
-            data = response.json()
-            result = data["choices"][0]["message"]["content"]
-            report_model_success(model_id)
-            return result
-        except Exception as e:
-            print(f"[ModelSelector] Model {model_id} failed: {e}")
-            report_model_failure(model_id)
-            last_err = e
-
-    raise last_err or Exception("All models failed")
+        raise last_err or Exception("All models failed")
 
 custom_llm_complete.func = custom_llm_complete
 custom_llm_complete.model_name = "openrouter-selector"
@@ -324,6 +434,7 @@ async def get_user_rag(user_id: int) -> LightRAG:
     rag = LightRAG(
         working_dir=str(user_dir),
         llm_model_func=custom_llm_complete,
+        llm_model_max_async=2,
         embedding_func=EmbeddingFunc(
             embedding_dim=dim,
             max_token_size=8192,
