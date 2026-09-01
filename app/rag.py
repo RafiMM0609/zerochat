@@ -1,5 +1,6 @@
 import os
 import time
+import shutil
 import httpx
 import numpy as np
 import asyncio
@@ -325,3 +326,16 @@ async def reset_user_vdb(user_id: int):
             filepath = user_dir / filename
             if filepath.exists():
                 filepath.unlink()
+
+async def reset_user_knowledge_base(user_id: int):
+    global _detected_embedding_dimension
+    _detected_embedding_dimension = None
+    
+    # Remove from memory cache
+    _user_rag_instances.pop(user_id, None)
+    
+    user_dir = RAG_DIR / f"user_{user_id}"
+    if user_dir.exists():
+        shutil.rmtree(user_dir)
+    user_dir.mkdir(parents=True, exist_ok=True)
+

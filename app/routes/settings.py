@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from app.auth import get_current_user
 from app.database import db_session
 from app.security import verify_and_harden_persona
-from app.rag import reset_user_vdb
+from app.rag import reset_user_vdb, reset_user_knowledge_base
 
 router = APIRouter(prefix="/api/settings", tags=["settings"])
 
@@ -89,3 +89,15 @@ async def reset_vdb(user: dict = Depends(get_current_user)):
         return {"message": "Vector database reset successfully. It will be re-initialized on next request."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to reset vector database: {str(e)}")
+
+@router.post("/reset-knowledge")
+async def reset_knowledge(user: dict = Depends(get_current_user)):
+    user_id = user['id']
+    try:
+        with db_session() as conn:
+            conn.execute("DELETE FROM documents WHERE user_id = ?", (user_id,))
+        await reset_user_knowledge_base(user_id)
+        return {"message": "All knowledge base documents, vector stores, and knowledge graph have been completely reset."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to reset knowledge base: {str(e)}")
+

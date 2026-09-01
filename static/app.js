@@ -2089,7 +2089,35 @@ async function resetVectorDB() {
   }
 }
 
+async function resetAllKnowledge() {
+  if (!await showConfirm('PERINGATAN: Apakah Anda yakin ingin menghapus SELURUH dokumen dan data Knowledge Base (Vector DB & Knowledge Graph)? Tindakan ini tidak dapat dibatalkan.', 'Reset All Knowledge')) return;
+
+  const statusEl = document.getElementById('db-status');
+  if (statusEl) statusEl.innerText = 'Resetting knowledge base...';
+
+  try {
+    const res = await fetch(API_BASE + '/settings/reset-knowledge', {
+      method: 'POST',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showNotification(data.message, 'success');
+      if (statusEl) statusEl.innerText = 'All knowledge reset successfully.';
+      if (typeof loadDocuments === 'function') loadDocuments();
+      if (typeof loadGraphData === 'function') loadGraphData();
+    } else {
+      showNotification('Reset Failed: ' + (data.detail || data.message), 'error');
+      if (statusEl) statusEl.innerText = 'Reset failed.';
+    }
+  } catch (e) {
+    showNotification('Error resetting knowledge base', 'error');
+    if (statusEl) statusEl.innerText = 'Error.';
+  }
+}
+
 window.resetVectorDB = resetVectorDB;
+window.resetAllKnowledge = resetAllKnowledge;
 
 // Register Service Worker for PWA
 if ('serviceWorker' in navigator) {

@@ -617,24 +617,27 @@
                 </div>
               </div>
 
-              <!-- Database Management Card -->
+              <!-- Database & Knowledge Management Card -->
               <div class="settings-card glass">
                 <div class="card-header">
                   <div class="card-icon" style="background:rgba(239,68,68,0.1); color:#f87171;">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
                   </div>
                   <div class="card-title-group">
-                    <h2>RAG Storage Management</h2>
-                    <p>Manage and reset vector databases to resolve dimension mismatches.</p>
+                    <h2>RAG & Knowledge Storage Management</h2>
+                    <p>Manage, reset vector databases, or wipe all uploaded knowledge data.</p>
                   </div>
                 </div>
                 <div class="card-body">
                   <p style="font-size: 13px; color: #a1a1aa; line-height: 1.5; margin-bottom: 12px;">
-                    If you change the embedding model in your settings (e.g. in `.env`), you might encounter embedding dimension mismatch errors. Resetting the vector database will safely delete the old vector databases and let the system recreate them.
+                    Reset vector databases if changing embedding models, or perform a complete wipe of all documents, vector indices, and knowledge graphs.
                   </p>
-                  <div class="action-row">
-                    <button class="primary-btn" onclick="resetVectorDB()" style="background: rgba(239,68,68,0.2); color: #f87171; border: 1px solid rgba(239,68,68,0.4); font-weight: 500;">
+                  <div class="action-row" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                    <button class="primary-btn" onclick="resetVectorDB()" style="background: rgba(234,179,8,0.15); color: #facc15; border: 1px solid rgba(234,179,8,0.4); font-weight: 500;">
                       Reset Vector Database
+                    </button>
+                    <button class="primary-btn" onclick="resetAllKnowledge()" style="background: rgba(239,68,68,0.25); color: #f87171; border: 1px solid rgba(239,68,68,0.5); font-weight: 600;">
+                      🗑️ Reset All Knowledge Base
                     </button>
                     <div id="db-status" class="status-msg"></div>
                   </div>
