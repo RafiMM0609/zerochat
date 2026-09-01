@@ -22,6 +22,7 @@ class MessageSchema(BaseModel):
     chatId: Optional[int] = None
     query_mode: Optional[str] = "mix"
     rerank: Optional[bool] = True
+    context_only: Optional[bool] = False
 
 async def generate_chat_title(message_text: str) -> str:
     title_models = [
@@ -126,7 +127,8 @@ async def handle_chat_completion_stream(
     ip_address: str,
     is_developer_api: bool = False,
     query_mode: str = "mix",
-    rerank: bool = True
+    rerank: bool = True,
+    context_only: bool = False
 ):
     user_id = user['id']
     
@@ -164,6 +166,57 @@ async def handle_chat_completion_stream(
         except Exception as e:
             print("[RAG] Error retrieving context from LightRAG:", e)
             context = ""
+
+        # If user requested Context Only (Chunks Only), return retrieved context without calling LLM
+        if context_only:
+            yield f"data: {json.dumps({'progress': 'Menyiapkan konteks...'})}\n\n"
+            if context.strip():
+                full_ai_response = f"### 📄 Potongan Konteks Terkait (Mode: {query_mode.upper()})\n\n{context}"
+            else:
+                full_ai_response = "⚠️ **Tidak ada konteks/chunk dokumen yang ditemukan** untuk kueri ini."
+
+            if chat_id:
+                try:
+                    with db_session() as conn:
+                        cursor = conn.execute("SELECT COUNT(*) as cnt FROM messages WHERE chat_id = ?", (chat_id,))
+                        msg_count = cursor.fetchone()["cnt"]
+                        if msg_count == 0:
+                            new_title = await generate_chat_title(final_message)
+                            conn.execute("UPDATE chats SET title = ? WHERE id = ? AND user_id = ?", (new_title, chat_id, user_id))
+                            yield f"data: {json.dumps({'newTitle': new_title})}\n\n"
+                except Exception as title_err:
+                    print("[TitleGen] Error checking/generating title:", title_err)
+
+            yield f"data: {json.dumps({'text': full_ai_response})}\n\n"
+
+            try:
+                input_tokens = len(final_message) // 4
+                output_tokens = len(full_ai_response) // 4
+                source_log = "api" if is_developer_api else "web"
+                with db_session() as conn:
+                    conn.execute(
+                        "INSERT INTO usage_logs (user_id, chat_id, source, input_tokens, output_tokens) VALUES (?, ?, ?, ?, ?)",
+                        (user_id, chat_id, source_log, input_tokens, output_tokens)
+                    )
+            except Exception as usage_err:
+                print("[Usage Log] Error recording usage logs:", usage_err)
+
+            if chat_id:
+                try:
+                    with db_session() as conn:
+                        conn.execute(
+                            "INSERT INTO messages (chat_id, role, content) VALUES (?, ?, ?)",
+                            (chat_id, "user", message)
+                        )
+                        conn.execute(
+                            "INSERT INTO messages (chat_id, role, content) VALUES (?, ?, ?)",
+                            (chat_id, "ai", full_ai_response)
+                        )
+                except Exception as history_err:
+                    print("[Chat API] Error saving chat history:", history_err)
+
+            yield "data: [DONE]\n\n"
+            return
             
         # 3. Load and harden system persona
         yield f"data: {json.dumps({'progress': 'Menyiapkan persona AI...'})}\n\n"
@@ -305,7 +358,8 @@ async def chat_stream(
         ip_address=ip_address,
         is_developer_api=False,
         query_mode=payload.query_mode,
-        rerank=payload.rerank
+        rerank=payload.rerank,
+        context_only=payload.context_only or False
     )
 
 @router.post("/completions")
@@ -328,5 +382,6 @@ async def developer_completions(
         ip_address=ip_address,
         is_developer_api=True,
         query_mode=payload.query_mode,
-        rerank=payload.rerank
+        rerank=payload.rerank,
+        context_only=payload.context_only or False
     )

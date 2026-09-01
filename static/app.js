@@ -574,6 +574,7 @@ const chatInput = document.getElementById('chat-input');
 const chatHistory = document.getElementById('chat-history');
 const queryModeSelect = document.getElementById('chat-query-mode');
 const rerankCheckbox = document.getElementById('chat-rerank');
+const contextOnlyCheckbox = document.getElementById('chat-context-only');
 
 // Load query settings from localStorage
 if (queryModeSelect) {
@@ -591,6 +592,16 @@ if (rerankCheckbox) {
   }
   rerankCheckbox.addEventListener('change', () => {
     localStorage.setItem('agnostic_rerank', rerankCheckbox.checked.toString());
+  });
+}
+
+if (contextOnlyCheckbox) {
+  const savedContextOnly = localStorage.getItem('agnostic_context_only');
+  if (savedContextOnly !== null) {
+    contextOnlyCheckbox.checked = savedContextOnly === 'true';
+  }
+  contextOnlyCheckbox.addEventListener('change', () => {
+    localStorage.setItem('agnostic_context_only', contextOnlyCheckbox.checked.toString());
   });
 }
 
@@ -831,6 +842,7 @@ chatForm.addEventListener('submit', async (e) => {
   try {
     const queryModeVal = queryModeSelect ? queryModeSelect.value : 'mix';
     const rerankVal = rerankCheckbox ? rerankCheckbox.checked : true;
+    const contextOnlyVal = contextOnlyCheckbox ? contextOnlyCheckbox.checked : false;
 
     const res = await fetch(API_BASE + '/chat/stream', {
       method: 'POST',
@@ -842,7 +854,8 @@ chatForm.addEventListener('submit', async (e) => {
         message: text,
         chatId: activeChatId,
         query_mode: queryModeVal,
-        rerank: rerankVal
+        rerank: rerankVal,
+        context_only: contextOnlyVal
       })
     });
 
