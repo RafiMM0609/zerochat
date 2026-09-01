@@ -2,13 +2,39 @@ import hashlib
 import io
 import json
 import pandas as pd
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+import asyncio
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Request
+from fastapi.responses import StreamingResponse
 from pypdf import PdfReader
 from app.auth import get_current_user
 from app.database import db_session
 from app.rag import get_user_rag
 
 router = APIRouter(prefix="/api/documents", tags=["documents"])
+
+class DocumentEventManager:
+    def __init__(self):
+        self._listeners = {}  # user_id -> set of asyncio.Queue
+
+    def subscribe(self, user_id: int) -> asyncio.Queue:
+        if user_id not in self._listeners:
+            self._listeners[user_id] = set()
+        queue = asyncio.Queue()
+        self._listeners[user_id].add(queue)
+        return queue
+
+    def unsubscribe(self, user_id: int, queue: asyncio.Queue):
+        if user_id in self._listeners:
+            self._listeners[user_id].discard(queue)
+            if not self._listeners[user_id]:
+                del self._listeners[user_id]
+
+    async def broadcast(self, user_id: int, message: dict):
+        if user_id in self._listeners:
+            for q in list(self._listeners[user_id]):
+                await q.put(message)
+
+doc_event_manager = DocumentEventManager()
 
 ALLOWED_EXTENSIONS = {"pdf", "txt", "csv", "md", "markdown", "json", "jsonl", "xlsx", "xls"}
 
@@ -77,6 +103,58 @@ def parse_file_to_text(file_bytes: bytes, filename: str, mime_type: str) -> str:
         print(f"[Parser] Failed to parse document {filename}:", e)
         raise HTTPException(status_code=400, detail=f"Error parsing document: {str(e)}")
 
+async def process_indexing_task(db_doc_id: int, user_id: int, parsed_text: str, doc_id: str, filename: str):
+    try:
+        rag = await get_user_rag(user_id)
+        await rag.ainsert(parsed_text, ids=doc_id, file_paths=filename)
+        with db_session() as conn:
+            conn.execute(
+                "UPDATE documents SET status = 'completed', error_message = NULL WHERE id = ?",
+                (db_doc_id,)
+            )
+        print(f"[RAG Background] Successfully indexed document {db_doc_id} ({filename})")
+        await doc_event_manager.broadcast(user_id, {
+            "type": "doc_updated",
+            "documentId": db_doc_id,
+            "status": "completed",
+            "filename": filename
+        })
+    except Exception as e:
+        print(f"[RAG Background] Failed to index document {db_doc_id} ({filename}):", e)
+        err_msg = str(e)
+        with db_session() as conn:
+            conn.execute(
+                "UPDATE documents SET status = 'failed', error_message = ? WHERE id = ?",
+                (err_msg, db_doc_id)
+            )
+        await doc_event_manager.broadcast(user_id, {
+            "type": "doc_updated",
+            "documentId": db_doc_id,
+            "status": "failed",
+            "filename": filename,
+            "error": err_msg
+        })
+
+@router.get("/stream")
+async def stream_document_events(request: Request, user: dict = Depends(get_current_user)):
+    user_id = user['id']
+    queue = doc_event_manager.subscribe(user_id)
+    
+    async def event_generator():
+        try:
+            while True:
+                if await request.is_disconnected():
+                    break
+                try:
+                    data = await asyncio.wait_for(queue.get(), timeout=15.0)
+                    yield f"data: {json.dumps(data)}\n\n"
+                except asyncio.TimeoutError:
+                    yield ": keep-alive\n\n"
+        finally:
+            doc_event_manager.unsubscribe(user_id, queue)
+            
+    return StreamingResponse(event_generator(), media_type="text/event-stream")
+
 @router.get("")
 def list_documents(user: dict = Depends(get_current_user)):
     with db_session() as conn:
@@ -85,11 +163,15 @@ def list_documents(user: dict = Depends(get_current_user)):
     
     documents_list = []
     for doc in docs:
+        status = doc["status"] if "status" in doc.keys() and doc["status"] else "completed"
+        error_msg = doc["error_message"] if "error_message" in doc.keys() else None
         documents_list.append({
             "id": doc["id"],
             "user_id": doc["user_id"],
             "filename": doc["filename"],
             "file_type": doc["file_type"],
+            "status": status,
+            "error_message": error_msg,
             "created_at": doc["created_at"]
         })
     return {"documents": documents_list}
@@ -173,12 +255,12 @@ async def upload_document(
     md5_hash = hashlib.md5(parsed_text.encode("utf-8")).hexdigest()
     doc_id = f"doc-{md5_hash}"
     
-    # Insert record into database
+    # Insert record into database with status 'processing'
     try:
         with db_session() as conn:
             cursor = conn.execute(
-                "INSERT INTO documents (user_id, filename, file_type, doc_id) VALUES (?, ?, ?, ?)",
-                (user_id, filename, mime_type, doc_id)
+                "INSERT INTO documents (user_id, filename, file_type, doc_id, status) VALUES (?, ?, ?, ?, ?)",
+                (user_id, filename, mime_type, doc_id, 'processing')
             )
             db_doc_id = cursor.lastrowid
     except Exception as e:
@@ -186,18 +268,14 @@ async def upload_document(
             raise HTTPException(status_code=400, detail="Document with identical content already uploaded.")
         raise HTTPException(status_code=500, detail="Failed to save document metadata.")
         
-    # Insert text into LightRAG
-    try:
-        rag = await get_user_rag(user_id)
-        await rag.ainsert(parsed_text, ids=doc_id, file_paths=filename)
-    except Exception as e:
-        # Rollback metadata insert if LightRAG fails
-        with db_session() as conn:
-            conn.execute("DELETE FROM documents WHERE id = ?", (db_doc_id,))
-        print("[RAG] Failed to index document:", e)
-        raise HTTPException(status_code=500, detail=f"Failed to index document in LightRAG: {str(e)}")
+    # Spawn background task for LightRAG indexing
+    asyncio.create_task(process_indexing_task(db_doc_id, user_id, parsed_text, doc_id, filename))
         
-    return {"message": "Upload and processing complete", "documentId": db_doc_id}
+    return {
+        "message": "Upload complete. Document indexing running in background.",
+        "documentId": db_doc_id,
+        "status": "processing"
+    }
 
 @router.delete("/{doc_db_id}")
 async def delete_document(

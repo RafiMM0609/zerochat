@@ -33,13 +33,23 @@ def create_access_token(data: dict, expires_delta: timedelta = None) -> str:
     encoded_jwt = jwt.encode(to_encode, JWT_SECRET, algorithm="HS256")
     return encoded_jwt
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Security(security)) -> dict:
-    if not credentials:
+from fastapi import Depends, HTTPException, Security, Query
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Security(security),
+    token_param: str = Query(None, alias="token")
+) -> dict:
+    raw_token = None
+    if credentials:
+        raw_token = credentials.credentials
+    elif token_param:
+        raw_token = token_param
+
+    if not raw_token:
         raise HTTPException(status_code=401, detail="Access token required")
     
-    token = credentials.credentials
     try:
-        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+        payload = jwt.decode(raw_token, JWT_SECRET, algorithms=["HS256"])
         user_id = payload.get("id")
         email = payload.get("email")
         role = payload.get("role")

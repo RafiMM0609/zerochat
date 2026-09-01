@@ -1177,49 +1177,128 @@ async function deleteApiKey(id) {
 }
 
 // ---- Knowledge: Upload Docs ----
-async function loadDocuments() {
-  const res = await fetch(API_BASE + '/documents', { headers: { 'Authorization': `Bearer ${token}` } });
-  const data = await res.json();
-  const list = document.getElementById('document-list');
-  list.innerHTML = '';
+let docEventSource = null;
+let docPollingInterval = null;
 
-  if (data.documents.length === 0) {
-    list.innerHTML = '<div style="color: var(--text-muted); font-size: 14px; font-style: italic; text-align: center; padding: 20px;">No documents uploaded yet.</div>';
-    return;
+function initDocumentStream() {
+  if (!token || docEventSource) return;
+  try {
+    const streamUrl = `${API_BASE}/documents/stream?token=${encodeURIComponent(token)}`;
+    docEventSource = new EventSource(streamUrl);
+
+    docEventSource.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'doc_updated') {
+          loadDocuments();
+          if (data.status === 'completed') {
+            showNotification(`Knowledge Base updated: "${data.filename}" is ready!`, 'success');
+          } else if (data.status === 'failed') {
+            showNotification(`Failed to index "${data.filename}": ${data.error || 'Unknown error'}`, 'error');
+          }
+        }
+      } catch (e) {}
+    };
+
+    docEventSource.onerror = () => {
+      if (docEventSource) {
+        docEventSource.close();
+        docEventSource = null;
+      }
+      setTimeout(initDocumentStream, 10000);
+    };
+  } catch (e) {
+    console.error('Failed to initialize document SSE stream:', e);
   }
+}
 
-  data.documents.forEach((doc, index) => {
-    const div = document.createElement('div');
-    div.className = 'doc-item';
+function checkPollingNeed(hasProcessingDocs) {
+  if (hasProcessingDocs) {
+    if (!docPollingInterval) {
+      docPollingInterval = setInterval(() => {
+        loadDocuments();
+      }, 5000);
+    }
+  } else {
+    if (docPollingInterval) {
+      clearInterval(docPollingInterval);
+      docPollingInterval = null;
+    }
+  }
+}
 
-    const isPdf = doc.file_type === 'application/pdf' || doc.filename.toLowerCase().endsWith('.pdf');
-    const docType = isPdf ? 'PDF' : 'TXT';
+// ---- Knowledge: Upload Docs ----
+async function loadDocuments() {
+  try {
+    const res = await fetch(API_BASE + '/documents', { headers: { 'Authorization': `Bearer ${token}` } });
+    if (!res.ok) return;
+    const data = await res.json();
+    const list = document.getElementById('document-list');
+    if (!list) return;
+    list.innerHTML = '';
 
-    div.innerHTML = `
-      <div class="doc-info">
-        <span class="doc-icon" style="background:${isPdf ? 'rgba(239,68,68,0.15)' : 'rgba(113,113,122,0.2)'}; color:${isPdf ? '#f87171' : '#a1a1aa'}; font-size:10px; font-weight:700;">${docType}</span>
-        <div class="doc-meta">
-          <span class="doc-name" title="${escapeHtml(doc.filename)}">${escapeHtml(doc.filename)}</span>
-          <span class="doc-date">${new Date(doc.created_at).toLocaleString()}</span>
+    if (!data.documents || data.documents.length === 0) {
+      list.innerHTML = '<div style="color: var(--text-muted); font-size: 14px; font-style: italic; text-align: center; padding: 20px;">No documents uploaded yet.</div>';
+      checkPollingNeed(false);
+      return;
+    }
+
+    let hasProcessingDocs = false;
+
+    data.documents.forEach((doc, index) => {
+      const div = document.createElement('div');
+      div.className = 'doc-item';
+
+      const isPdf = doc.file_type === 'application/pdf' || doc.filename.toLowerCase().endsWith('.pdf');
+      const docType = isPdf ? 'PDF' : 'TXT';
+
+      const docStatus = doc.status || 'completed';
+      if (docStatus === 'processing') {
+        hasProcessingDocs = true;
+      }
+
+      let statusBadgeHtml = '';
+      if (docStatus === 'processing') {
+        statusBadgeHtml = '<span class="doc-status-badge processing" title="Extracting entities & generating embeddings in background">⌛ Processing...</span>';
+      } else if (docStatus === 'failed') {
+        const errText = escapeHtml(doc.error_message || 'Indexing failed');
+        statusBadgeHtml = `<span class="doc-status-badge failed" title="${errText}">❌ Failed</span>`;
+      }
+
+      div.innerHTML = `
+        <div class="doc-info">
+          <span class="doc-icon" style="background:${isPdf ? 'rgba(239,68,68,0.15)' : 'rgba(113,113,122,0.2)'}; color:${isPdf ? '#f87171' : '#a1a1aa'}; font-size:10px; font-weight:700;">${docType}</span>
+          <div class="doc-meta">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="doc-name" title="${escapeHtml(doc.filename)}">${escapeHtml(doc.filename)}</span>
+              ${statusBadgeHtml}
+            </div>
+            <span class="doc-date">${new Date(doc.created_at).toLocaleString()}</span>
+          </div>
         </div>
-      </div>
-      <button class="delete-doc-btn" title="Delete Document" aria-label="Delete Document">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
-      </button>
-    `;
+        <button class="delete-doc-btn" title="Delete Document" aria-label="Delete Document">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>
+        </button>
+      `;
 
-    div.querySelector('.delete-doc-btn').addEventListener('click', () => {
-      deleteDocument(doc.id, div);
+      div.querySelector('.delete-doc-btn').addEventListener('click', () => {
+        deleteDocument(doc.id, div);
+      });
+
+      list.appendChild(div);
+
+      // Stagger animation for document items
+      animate(div, { opacity: [0, 1], y: [15, 0] }, {
+        duration: 0.3,
+        delay: index * 0.05
+      });
     });
 
-    list.appendChild(div);
-
-    // Stagger animation for document items
-    animate(div, { opacity: [0, 1], y: [15, 0] }, {
-      duration: 0.3,
-      delay: index * 0.05
-    });
-  });
+    checkPollingNeed(hasProcessingDocs);
+    initDocumentStream();
+  } catch (e) {
+    console.error('Failed to load documents:', e);
+  }
 }
 
 async function deleteDocument(id, element) {
@@ -1339,7 +1418,6 @@ async function uploadFile() {
   const formData = new FormData();
   const fileSize = file.size;
 
-  // Corrected bug: error if size is GREATER than 10MB
   if (fileSize > 10000000) {
     showNotification('File size must be less than 10MB', 'error');
     return;
@@ -1350,21 +1428,21 @@ async function uploadFile() {
   selectedContainer.style.display = 'none';
   progressContainer.style.display = 'flex';
   uploadSpinner.style.display = 'block';
-  progressStatus.innerText = 'Uploading and processing document...';
+  progressStatus.innerText = 'Uploading document to server...';
   if (status) status.innerText = '';
 
   let progressAnimation = animate(progressFill, { width: ['0%', '90%'] }, {
-    duration: 3.5,
+    duration: 1.2,
     easing: "ease-out"
   });
 
   let percentVal = 0;
   const percentInterval = setInterval(() => {
     if (percentVal < 90) {
-      percentVal += Math.ceil((90 - percentVal) * 0.15);
+      percentVal += Math.ceil((90 - percentVal) * 0.25);
       progressPercent.innerText = `${percentVal}%`;
     }
-  }, 300);
+  }, 150);
 
   try {
     const res = await fetch(API_BASE + '/documents/upload', {
@@ -1378,8 +1456,8 @@ async function uploadFile() {
     if (res.ok) {
       progressAnimation.stop();
       progressPercent.innerText = '100%';
-      progressStatus.innerText = 'Upload complete! Document indexed.';
-      showNotification('Document uploaded and indexed successfully!', 'success');
+      progressStatus.innerText = 'Uploaded! Processing knowledge base in background...';
+      showNotification('Document uploaded! Processing started in background.', 'success');
 
       animate(progressFill, { width: '100%' }, { duration: 0.3 });
       uploadSpinner.style.display = 'none';
@@ -1396,7 +1474,7 @@ async function uploadFile() {
           progressFill.style.width = '0%';
           progressFill.style.background = 'linear-gradient(90deg, var(--primary) 0%, #5eead4 100%)';
         });
-      }, 2500);
+      }, 1500);
 
     } else {
       const data = await res.json();

@@ -46,6 +46,8 @@ def init_db():
             filename TEXT NOT NULL,
             file_type TEXT,
             doc_id TEXT UNIQUE, -- Stores LightRAG doc_id reference (e.g., doc-hash)
+            status TEXT DEFAULT 'completed', -- 'processing', 'completed', 'failed'
+            error_message TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         );
@@ -131,4 +133,13 @@ def init_db():
             FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
         );
         """)
+
+        # Auto-migration for documents table columns
+        cursor = conn.execute("PRAGMA table_info(documents)")
+        columns = [row["name"] for row in cursor.fetchall()]
+        if "status" not in columns:
+            conn.execute("ALTER TABLE documents ADD COLUMN status TEXT DEFAULT 'completed'")
+        if "error_message" not in columns:
+            conn.execute("ALTER TABLE documents ADD COLUMN error_message TEXT")
+
         print("[Database] Schema initialized.")
